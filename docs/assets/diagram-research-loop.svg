@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 280" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 260" role="img" aria-labelledby="title desc">
   <title id="title">Research loop</title>
-  <desc id="desc">Questions, evidence, dialogue, and publication reinforce one another.</desc>
+  <desc id="desc">Questions become evidence, dialogue, and publication, then feed the next cycle.</desc>
   <defs>
     <radialGradient id="research-blue" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#22577A" stop-opacity="0.18"/>
@@ -10,35 +10,38 @@
       <stop offset="0%" stop-color="#80ED99" stop-opacity="0.24"/>
       <stop offset="100%" stop-color="#80ED99" stop-opacity="0"/>
     </radialGradient>
-    <marker id="research-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-      <path d="M0 0 10 5 0 10Z" fill="#7AB3D7"/>
+    <marker id="research-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0 0 7 3.5 0 7Z" fill="#7AB3D7"/>
     </marker>
   </defs>
-  <path d="M232 86 C308 54 510 54 586 86 C650 114 650 186 586 214 C510 246 308 246 232 214 C168 186 168 114 232 86Z" fill="none" stroke="#BCD3DE" stroke-width="3" stroke-linecap="round" marker-end="url(#research-arrow)"/>
-  <g fill="url(#research-blue)">
-    <circle cx="236" cy="92" r="52"/>
-    <circle cx="584" cy="92" r="52"/>
+  <g fill="none" stroke="#BCD3DE" stroke-width="2.5" stroke-linecap="round" marker-end="url(#research-arrow)">
+    <path d="M170 110 H264"/>
+    <path d="M358 110 H452"/>
+    <path d="M554 110 H638"/>
+    <path d="M648 150 C560 214 252 214 168 128"/>
   </g>
-  <g fill="url(#research-green)">
-    <circle cx="584" cy="188" r="52"/>
-    <circle cx="236" cy="188" r="52"/>
+  <g fill="url(#research-blue)">
+    <circle cx="130" cy="110" r="50"/>
+    <circle cx="318" cy="110" r="50"/>
+    <circle cx="514" cy="110" r="50"/>
+    <circle cx="688" cy="110" r="52"/>
   </g>
   <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" text-anchor="middle">
-    <g transform="translate(184 40)">
-      <circle cx="52" cy="52" r="38" fill="#F8FCFD" stroke="#22577A" stroke-width="2.5"/>
-      <text x="52" y="58" fill="#123047" font-size="16" font-weight="700">Question</text>
+    <g transform="translate(92 72)">
+      <circle cx="38" cy="38" r="38" fill="#F8FCFD" stroke="#22577A" stroke-width="2.5"/>
+      <text x="38" y="44" fill="#123047" font-size="16" font-weight="700">Question</text>
     </g>
-    <g transform="translate(532 40)">
-      <circle cx="52" cy="52" r="38" fill="#F8FCFD" stroke="#22577A" stroke-width="2.5"/>
-      <text x="52" y="58" fill="#123047" font-size="18" font-weight="700">Evidence</text>
+    <g transform="translate(280 72)">
+      <circle cx="38" cy="38" r="38" fill="#F8FCFD" stroke="#80ED99" stroke-width="2.5"/>
+      <text x="38" y="44" fill="#123047" font-size="17" font-weight="700">Evidence</text>
     </g>
-    <g transform="translate(524 136)">
-      <circle cx="60" cy="52" r="40" fill="#F8FCFD" stroke="#80ED99" stroke-width="2.5"/>
-      <text x="60" y="58" fill="#123047" font-size="18" font-weight="700">Dialogue</text>
+    <g transform="translate(474 72)">
+      <circle cx="40" cy="38" r="38" fill="#F8FCFD" stroke="#22577A" stroke-width="2.5"/>
+      <text x="40" y="44" fill="#123047" font-size="16" font-weight="700">Dialogue</text>
     </g>
-    <g transform="translate(184 136)">
-      <circle cx="52" cy="52" r="38" fill="#22577A"/>
-      <text x="52" y="58" fill="#FFFFFF" font-size="16" font-weight="700">Publish</text>
+    <g transform="translate(646 70)">
+      <circle cx="42" cy="40" r="40" fill="#22577A"/>
+      <text x="42" y="46" fill="#FFFFFF" font-size="16" font-weight="700">Publish</text>
     </g>
   </g>
 </svg>

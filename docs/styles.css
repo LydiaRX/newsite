@@ -279,9 +279,12 @@ main {
   margin: 0 auto;
 }
 
-.hero,
-.page-hero {
+.hero {
   padding: 96px 0 54px;
+}
+
+.page-hero {
+  padding: 18px 0 42px;
 }
 
 .hero-grid,
@@ -353,6 +356,15 @@ th {
 .section-intro {
   color: var(--muted);
   font-size: 1.05rem;
+}
+
+.hero-text,
+.lead,
+.section-intro,
+.callout p,
+.cta-band p,
+.caption {
+  text-wrap: pretty;
 }
 
 .hero-actions,
@@ -509,16 +521,12 @@ th {
   display: grid;
   gap: 14px;
   align-content: start;
+  align-self: start;
   padding: 0;
   background: transparent;
   border: 0;
   border-radius: 0;
   box-shadow: none;
-}
-
-.diagram-panel h3 {
-  margin-top: 0;
-  margin-bottom: 12px;
 }
 
 .diagram-image {
@@ -559,7 +567,8 @@ th {
 }
 
 .breadcrumb {
-  padding-top: 38px;
+  padding-top: 18px;
+  margin-bottom: 4px;
   color: var(--muted);
   font-size: 0.92rem;
 }
@@ -572,6 +581,18 @@ th {
   margin-top: 12px;
   color: var(--muted);
   font-size: 0.92rem;
+}
+
+@media (min-width: 900px) {
+  .hero-text,
+  .lead,
+  .section-intro,
+  .callout p,
+  .cta-band p {
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+  }
 }
 
 .site-footer {

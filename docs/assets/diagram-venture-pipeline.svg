@@ -10,11 +10,16 @@
       <stop offset="0%" stop-color="#80ED99" stop-opacity="0.22"/>
       <stop offset="100%" stop-color="#80ED99" stop-opacity="0"/>
     </radialGradient>
-    <marker id="venture-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-      <path d="M0 0 10 5 0 10Z" fill="#7AB3D7"/>
+    <marker id="venture-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0 0 7 3.5 0 7Z" fill="#7AB3D7"/>
     </marker>
   </defs>
-  <path d="M116 120 C206 120 216 92 292 92 S392 148 456 148 540 92 618 92 696 120 744 120" fill="none" stroke="#BCD3DE" stroke-width="3" stroke-linecap="round" marker-end="url(#venture-arrow)"/>
+  <g fill="none" stroke="#BCD3DE" stroke-width="2.5" stroke-linecap="round" marker-end="url(#venture-arrow)">
+    <path d="M154 116 C192 116 218 104 250 98"/>
+    <path d="M334 96 C364 96 388 118 414 136"/>
+    <path d="M498 146 C534 146 556 114 576 98"/>
+    <path d="M660 96 C682 96 694 106 702 116"/>
+  </g>
   <g fill="url(#venture-blue)">
     <circle cx="116" cy="120" r="44"/>
     <circle cx="456" cy="148" r="44"/>

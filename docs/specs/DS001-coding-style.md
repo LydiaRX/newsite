@@ -24,6 +24,8 @@ All generated HTML pages must include the Mermaid ESM module in `<head>`. Public
 
 Page heroes must preserve a clear information hierarchy. On public pages, the short page, product, or company name must be the `h1`, while the longer descriptive statement must appear as a more modest subtitle below it. Authors must not force artificial line breaks or narrow width constraints on brand labels, titles, or subtitles when the surrounding layout still has horizontal space available.
 
+Vertical rhythm near the top of each page must stay compact and purposeful. Breadcrumbs, eyebrow text, hero titles, and introductory copy should appear without large empty gaps that delay access to the first substantive content. Longer introductory and explanatory paragraphs may use justified alignment on wide layouts when that improves reading rhythm, but narrow cards and mobile layouts should remain left-aligned to avoid awkward spacing.
+
 Content must stay factual, restrained, and evidence-compatible. The project must not invent undisclosed people, partnerships, regulatory claims, product capabilities, or deployment guarantees. When public data is unavailable, the page should use category-based wording or explicitly state that named disclosures are pending.
 
 Site pages should prefer cards, concise lists, split layouts, and short prose blocks over tables. Outside the specification loader and specification content itself, tables are discouraged and should only appear if the information would become less clear without a true grid. Placeholder-style headers such as "text", "content", or similarly generic wording are prohibited.

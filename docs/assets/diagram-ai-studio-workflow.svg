@@ -10,14 +10,14 @@
       <stop offset="0%" stop-color="#80ED99" stop-opacity="0.24"/>
       <stop offset="100%" stop-color="#80ED99" stop-opacity="0"/>
     </radialGradient>
-    <marker id="ai-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-      <path d="M0 0 10 5 0 10Z" fill="#7AB3D7"/>
+    <marker id="ai-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0 0 7 3.5 0 7Z" fill="#7AB3D7"/>
     </marker>
   </defs>
-  <g fill="none" stroke="#BCD3DE" stroke-width="3" stroke-linecap="round" marker-end="url(#ai-arrow)">
-    <path d="M186 86 C260 86 286 108 342 136"/>
-    <path d="M186 194 C260 194 286 172 342 144"/>
-    <path d="M476 140 H628"/>
+  <g fill="none" stroke="#BCD3DE" stroke-width="2.5" stroke-linecap="round" marker-end="url(#ai-arrow)">
+    <path d="M254 86 C286 86 314 104 350 128"/>
+    <path d="M262 194 C294 194 320 176 350 152"/>
+    <path d="M470 140 H616"/>
   </g>
   <g fill="url(#ai-green)">
     <circle cx="186" cy="86" r="48"/>

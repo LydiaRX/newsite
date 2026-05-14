@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 280" role="img" aria-labelledby="title desc">
   <title id="title">Genomic AI flow</title>
-  <desc id="desc">Governed cohorts move through inference toward biomarker, trial, and partner outcomes.</desc>
+  <desc id="desc">Governed cohorts move through inference toward biomarkers, trials, and partner value.</desc>
   <defs>
     <radialGradient id="genomic-blue" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#22577A" stop-opacity="0.18"/>
@@ -10,47 +10,47 @@
       <stop offset="0%" stop-color="#80ED99" stop-opacity="0.24"/>
       <stop offset="100%" stop-color="#80ED99" stop-opacity="0"/>
     </radialGradient>
-    <marker id="genomic-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-      <path d="M0 0 10 5 0 10Z" fill="#7AB3D7"/>
+    <marker id="genomic-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0 0 7 3.5 0 7Z" fill="#7AB3D7"/>
     </marker>
   </defs>
-  <g fill="none" stroke="#BCD3DE" stroke-width="3" stroke-linecap="round" marker-end="url(#genomic-arrow)">
-    <path d="M174 140 H306"/>
-    <path d="M438 140 H590"/>
-    <path d="M372 104 C372 84 392 70 430 64"/>
-    <path d="M372 176 C372 196 392 210 430 216"/>
+  <g fill="none" stroke="#BCD3DE" stroke-width="2.5" stroke-linecap="round" marker-end="url(#genomic-arrow)">
+    <path d="M188 140 H278"/>
+    <path d="M394 128 C426 110 448 98 478 92"/>
+    <path d="M394 152 C426 170 448 182 478 188"/>
+    <path d="M400 140 H624"/>
   </g>
   <g fill="url(#genomic-blue)">
-    <circle cx="174" cy="140" r="50"/>
-    <circle cx="372" cy="140" r="88"/>
-    <circle cx="650" cy="140" r="56"/>
+    <circle cx="150" cy="140" r="52"/>
+    <circle cx="340" cy="140" r="86"/>
+    <circle cx="690" cy="140" r="58"/>
   </g>
   <g fill="url(#genomic-green)">
-    <ellipse cx="486" cy="64" rx="82" ry="30"/>
-    <ellipse cx="486" cy="216" rx="82" ry="30"/>
+    <ellipse cx="566" cy="92" rx="94" ry="30"/>
+    <ellipse cx="556" cy="188" rx="84" ry="30"/>
   </g>
   <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" text-anchor="middle">
-    <g transform="translate(122 88)">
+    <g transform="translate(98 88)">
       <circle cx="52" cy="52" r="38" fill="#F8FCFD" stroke="#22577A" stroke-width="2.5"/>
       <text x="52" y="58" fill="#123047" font-size="18" font-weight="700">Cohorts</text>
     </g>
-    <g transform="translate(308 88)">
-      <circle cx="64" cy="52" r="52" fill="#22577A"/>
-      <text x="64" y="47" fill="#FFFFFF" font-size="21" font-weight="800">Inference</text>
-      <text x="64" y="69" fill="#DCE9F1" font-size="14">engine</text>
+    <g transform="translate(280 88)">
+      <circle cx="60" cy="52" r="52" fill="#22577A"/>
+      <text x="60" y="47" fill="#FFFFFF" font-size="21" font-weight="800">Inference</text>
+      <text x="60" y="68" fill="#DCE9F1" font-size="14">engine</text>
     </g>
-    <g transform="translate(404 34)">
-      <rect width="164" height="40" rx="20" fill="#F8FCFD" stroke="#80ED99" stroke-width="2"/>
-      <text x="82" y="26" fill="#123047" font-size="17" font-weight="700">Biomarkers</text>
+    <g transform="translate(488 72)">
+      <rect width="156" height="40" rx="20" fill="#F8FCFD" stroke="#80ED99" stroke-width="2"/>
+      <text x="78" y="26" fill="#123047" font-size="17" font-weight="700">Biomarkers</text>
     </g>
-    <g transform="translate(404 186)">
-      <rect width="164" height="40" rx="20" fill="#F8FCFD" stroke="#80ED99" stroke-width="2"/>
-      <text x="82" y="26" fill="#123047" font-size="17" font-weight="700">Trials</text>
+    <g transform="translate(488 168)">
+      <rect width="136" height="40" rx="20" fill="#F8FCFD" stroke="#80ED99" stroke-width="2"/>
+      <text x="68" y="26" fill="#123047" font-size="17" font-weight="700">Trials</text>
     </g>
-    <g transform="translate(594 84)">
-      <rect width="112" height="112" rx="56" fill="#F8FCFD" stroke="#22577A" stroke-width="2.5"/>
-      <text x="56" y="55" fill="#123047" font-size="18" font-weight="700">Partner</text>
-      <text x="56" y="77" fill="#607488" font-size="14">value</text>
+    <g transform="translate(632 82)">
+      <circle cx="58" cy="58" r="42" fill="#F8FCFD" stroke="#22577A" stroke-width="2.5"/>
+      <text x="58" y="54" fill="#123047" font-size="18" font-weight="700">Partner</text>
+      <text x="58" y="76" fill="#607488" font-size="14">value</text>
     </g>
   </g>
 </svg>

@@ -10,15 +10,15 @@
       <stop offset="0%" stop-color="#80ED99" stop-opacity="0.24"/>
       <stop offset="100%" stop-color="#80ED99" stop-opacity="0"/>
     </radialGradient>
-    <marker id="arch-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-      <path d="M0 0 10 5 0 10Z" fill="#7AB3D7"/>
+    <marker id="arch-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0 0 7 3.5 0 7Z" fill="#7AB3D7"/>
     </marker>
   </defs>
-  <g fill="none" stroke="#BCD3DE" stroke-width="3" stroke-linecap="round" marker-end="url(#arch-arrow)">
-    <path d="M196 78 C264 78 278 106 330 122"/>
-    <path d="M196 140 H330"/>
-    <path d="M196 202 C264 202 278 174 330 158"/>
-    <path d="M492 140 H640"/>
+  <g fill="none" stroke="#BCD3DE" stroke-width="2.5" stroke-linecap="round" marker-end="url(#arch-arrow)">
+    <path d="M236 78 C274 78 300 96 344 118"/>
+    <path d="M236 140 H344"/>
+    <path d="M236 202 C274 202 300 184 344 162"/>
+    <path d="M468 140 H630"/>
   </g>
   <g fill="url(#arch-blue)">
     <circle cx="196" cy="78" r="48"/>
