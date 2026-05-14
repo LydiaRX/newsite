@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title desc">
+  <title id="title">LydiaRX AG mark</title>
+  <desc id="desc">A geometric mark combining molecular nodes and a shield-like contour.</desc>
+  <defs>
+    <linearGradient id="lydiarx-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f2f4a" />
+      <stop offset="100%" stop-color="#0f766e" />
+    </linearGradient>
+  </defs>
+  <rect x="14" y="14" width="92" height="92" rx="28" fill="#f6f8fb" stroke="#cfd8e4" />
+  <path
+    d="M60 28c-14 0-26 12-26 26v14c0 15 11 27 26 32 15-5 26-17 26-32V54c0-14-12-26-26-26Z"
+    fill="url(#lydiarx-gradient)"
+    opacity="0.95"
+  />
+  <circle cx="48" cy="54" r="6" fill="#ffffff" />
+  <circle cx="72" cy="54" r="6" fill="#ffffff" />
+  <circle cx="60" cy="74" r="6" fill="#ffffff" />
+  <path d="M48 54h24M48 54l12 20M72 54 60 74" stroke="#d8f0ec" stroke-width="4" stroke-linecap="round" />
+</svg>

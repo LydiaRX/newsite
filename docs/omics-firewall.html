@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Omics Firewall — Secure Data Collaboration for Sensitive Biomedical Data</title>
+    <meta
+      name="description"
+      content="Omics Firewall is LydiaRX’s architecture for governed access, compute-to-data collaboration, provenance, auditability, and controlled use of sensitive omics and biomedical data."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+    <script type="module" src="partials-loader.js"></script>
+  </head>
+  <body data-page="omics-firewall">
+    <div data-include="partials/site-header.html"></div>
+    <main class="page-shell">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a> / Omics Firewall</nav>
+
+      <section class="page-hero">
+        <p class="eyebrow">Secure biomedical collaboration</p>
+        <h1>Omics Firewall</h1>
+        <p class="hero-subtitle">Controlled access infrastructure for sensitive omics and biomedical data.</p>
+        <p class="hero-text">
+          Omics Firewall is LydiaRX’s architecture for secure, governed, and commercially usable
+          access to sensitive genomic, omics, clinical, and biomedical data.
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="split-grid">
+          <div>
+            <h2>Boundary layer for governed biomedical collaboration</h2>
+            <p class="section-intro">
+              Omics Firewall acts as the boundary layer between raw biomedical data and research, AI
+              training, pharma collaboration, model development, and controlled output release.
+            </p>
+            <p class="lead">
+              It governs who can access which data views, what computations are permitted, which
+              models may be trained, what outputs may leave the environment, and under which approvals.
+            </p>
+          </div>
+          <div class="diagram-panel">
+            <h3>Compute-to-data flow</h3>
+            <img class="diagram-image" src="assets/diagram-omics-flow.svg" alt="Diagram showing partner requests passing through Omics Firewall into approved biomedical outputs." />
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Core functions</h2>
+        <div class="card-grid">
+          <article class="card">
+            <h3>Governed access</h3>
+            <p>Control which users, institutions, partners, and systems can see specific data views.</p>
+          </article>
+          <article class="card">
+            <h3>Compute-to-data</h3>
+            <p>Allow approved analysis inside controlled environments without uncontrolled raw-data export.</p>
+          </article>
+          <article class="card">
+            <h3>Consent-aware use</h3>
+            <p>Map data access and computation to consent, licence, jurisdictional, and institutional conditions.</p>
+          </article>
+          <article class="card">
+            <h3>Provenance and lineage</h3>
+            <p>Track datasets, transformations, model training, outputs, approvals, and release decisions.</p>
+          </article>
+          <article class="card">
+            <h3>Model governance</h3>
+            <p>Control model training, evaluation, release, partner workspaces, and downstream use.</p>
+          </article>
+          <article class="card">
+            <h3>Output control</h3>
+            <p>Review and approve outbound reports, aggregates, biomarkers, and other deliverables.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="detail-grid">
+          <article class="callout">
+            <h2>Secure collaboration beyond omics.</h2>
+            <p>
+              The same architectural principles apply to regulated supply chains, pharmaceutical data
+              exchange, product provenance, controlled manufacturing documentation, and sensitive
+              commercial collaboration.
+            </p>
+          </article>
+          <article class="callout">
+            <h2>AI-assisted, human-approved governance.</h2>
+            <p>
+              AI agents can support proposal classification, metadata normalisation, compliance
+              checklist generation, audit package preparation, suspicious export detection, and
+              cohort-query assistance while sensitive approvals remain human-owned.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="cta-band">
+          <h2>Make sensitive biomedical data usable without losing control.</h2>
+          <a class="button secondary" href="contact.html">Discuss Omics Firewall</a>
+        </div>
+      </section>
+    </main>
+    <div data-include="partials/site-footer.html"></div>
+  </body>
+</html>

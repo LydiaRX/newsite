@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 240" role="img" aria-labelledby="title desc">
+  <title id="title">Omics Firewall flow</title>
+  <desc id="desc">Partner requests move through the firewall toward approved use.</desc>
+  <defs>
+    <radialGradient id="omics-blue" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22577A" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#22577A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="omics-green" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#80ED99" stop-opacity="0.24"/>
+      <stop offset="100%" stop-color="#80ED99" stop-opacity="0"/>
+    </radialGradient>
+    <marker id="omics-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 10 5 0 10Z" fill="#7AB3D7"/>
+    </marker>
+  </defs>
+  <g fill="none" stroke="#BCD3DE" stroke-width="3" stroke-linecap="round" marker-end="url(#omics-arrow)">
+    <path d="M210 120 H336"/>
+    <path d="M486 120 H628"/>
+  </g>
+  <g fill="url(#omics-blue)">
+    <circle cx="154" cy="120" r="52"/>
+    <circle cx="668" cy="120" r="56"/>
+  </g>
+  <g fill="url(#omics-green)">
+    <circle cx="410" cy="120" r="88"/>
+  </g>
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" text-anchor="middle">
+    <g transform="translate(106 72)">
+      <circle cx="48" cy="48" r="38" fill="#F8FCFD" stroke="#22577A" stroke-width="2.5"/>
+      <text x="48" y="46" fill="#123047" font-size="16" font-weight="700">Partner</text>
+      <text x="48" y="66" fill="#607488" font-size="13">requests</text>
+    </g>
+    <g transform="translate(350 58)">
+      <path d="M60 0 C95 20 102 52 102 78 C102 118 70 142 60 152 C50 142 18 118 18 78 C18 52 25 20 60 0Z" fill="#F8FCFD" stroke="#80ED99" stroke-width="2.5"/>
+      <text x="60" y="82" fill="#123047" font-size="21" font-weight="800">Firewall</text>
+    </g>
+    <g transform="translate(612 64)">
+      <rect width="112" height="112" rx="56" fill="#22577A"/>
+      <text x="56" y="53" fill="#FFFFFF" font-size="18" font-weight="700">Approved</text>
+      <text x="56" y="75" fill="#DCE9F1" font-size="14">use</text>
+    </g>
+  </g>
+</svg>

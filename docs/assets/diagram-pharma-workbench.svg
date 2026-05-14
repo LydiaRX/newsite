@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 240" role="img" aria-labelledby="title desc">
+  <title id="title">Pharma workbench path</title>
+  <desc id="desc">Data moves through agents and simulation into study decisions.</desc>
+  <defs>
+    <radialGradient id="pharma-blue" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22577A" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#22577A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pharma-green" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#80ED99" stop-opacity="0.24"/>
+      <stop offset="100%" stop-color="#80ED99" stop-opacity="0"/>
+    </radialGradient>
+    <marker id="pharma-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 10 5 0 10Z" fill="#7AB3D7"/>
+    </marker>
+  </defs>
+  <path d="M146 120 H270 C308 120 314 88 356 88 H430 C472 88 478 152 520 152 H676" fill="none" stroke="#BCD3DE" stroke-width="3" stroke-linecap="round" marker-end="url(#pharma-arrow)"/>
+  <g fill="url(#pharma-blue)">
+    <circle cx="146" cy="120" r="48"/>
+    <circle cx="520" cy="152" r="48"/>
+    <circle cx="716" cy="152" r="52"/>
+  </g>
+  <g fill="url(#pharma-green)">
+    <circle cx="356" cy="88" r="58"/>
+  </g>
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" text-anchor="middle">
+    <g transform="translate(98 72)">
+      <circle cx="48" cy="48" r="36" fill="#F8FCFD" stroke="#22577A" stroke-width="2.5"/>
+      <text x="48" y="54" fill="#123047" font-size="18" font-weight="700">Data</text>
+    </g>
+    <g transform="translate(296 28)">
+      <circle cx="60" cy="60" r="46" fill="#F8FCFD" stroke="#80ED99" stroke-width="2.5"/>
+      <text x="60" y="55" fill="#123047" font-size="18" font-weight="700">Agents</text>
+      <text x="60" y="76" fill="#607488" font-size="13">compare</text>
+    </g>
+    <g transform="translate(466 106)">
+      <circle cx="54" cy="46" r="38" fill="#F8FCFD" stroke="#22577A" stroke-width="2.5"/>
+      <text x="54" y="52" fill="#123047" font-size="16" font-weight="700">Simulate</text>
+    </g>
+    <g transform="translate(660 96)">
+      <circle cx="56" cy="56" r="42" fill="#22577A"/>
+      <text x="56" y="62" fill="#FFFFFF" font-size="17" font-weight="700">Decide</text>
+    </g>
+  </g>
+</svg>

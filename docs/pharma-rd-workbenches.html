@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pharma R&amp;D Workbenches — LydiaRX AG</title>
+    <meta
+      name="description"
+      content="LydiaRX builds model-informed analytical workbenches for dose optimisation, titration strategy, patient stratification, simulation, clinical evidence generation, and study design."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+    <script type="module" src="partials-loader.js"></script>
+  </head>
+  <body data-page="rd-workbenches">
+    <div data-include="partials/site-header.html"></div>
+    <main class="page-shell">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a> / Pharma R&amp;D Workbenches</nav>
+
+      <section class="page-hero">
+        <p class="eyebrow">Model-informed evidence</p>
+        <h1>Pharma R&amp;D Workbenches</h1>
+        <p class="hero-subtitle">Model-informed workbenches for pharma R&amp;D, dose optimisation, and clinical evidence generation.</p>
+        <p class="hero-text">
+          LydiaRX develops governed analytical workbenches that combine statistical modelling,
+          pharmacometrics, machine learning, simulation, synthetic challenge testing, and AI-assisted orchestration.
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="split-grid">
+          <div>
+            <h2>From fragmented data to better study decisions</h2>
+            <p class="section-intro">
+              LydiaRX Pharma R&amp;D Workbenches help biotech and pharma teams transform existing data
+              into better hypotheses, better study designs, and clearer evidence packages.
+            </p>
+            <p class="lead">
+              The approach is especially relevant where efficacy, tolerability, adherence, adverse
+              events, discontinuation, and patient heterogeneity interact. Instead of relying on a
+              single model, the workbench runs several analytical agents and compares their outputs.
+            </p>
+          </div>
+          <div class="diagram-panel">
+            <h3>Workbench architecture</h3>
+            <img class="diagram-image" src="assets/diagram-pharma-workbench.svg" alt="Diagram showing data, model agents, simulation, and study decisions inside the pharma workbench." />
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>What the workbench does</h2>
+        <div class="card-grid">
+          <article class="card">
+            <h3>Data layer</h3>
+            <p>Builds versioned patient-visit datasets, data dictionaries, transformation logs, and missingness maps.</p>
+          </article>
+          <article class="card">
+            <h3>Model agents</h3>
+            <p>Runs independent statistical, pharmacometric, machine-learning, and simulation agents.</p>
+          </article>
+          <article class="card">
+            <h3>Synthetic challenge</h3>
+            <p>Generates artificial datasets with known mechanisms to test bias detection and robustness.</p>
+          </article>
+          <article class="card">
+            <h3>Simulation</h3>
+            <p>Tests candidate dose and titration policies under alternative assumptions.</p>
+          </article>
+          <article class="card">
+            <h3>Comparison</h3>
+            <p>Measures convergence, disagreement, calibration, sensitivity, and failure modes.</p>
+          </article>
+          <article class="card">
+            <h3>Reporting</h3>
+            <p>Produces reproducible reports, model cards, assumptions, warnings, and study-design proposals.</p>
+          </article>
+          <article class="card">
+            <h3>Governance</h3>
+            <p>Maintains provenance, code versions, audit logs, decision traces, and pre-specified analysis plans.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Example analytical agents</h2>
+        <div class="card-grid">
+          <article class="card">
+            <h3>Longitudinal efficacy agent</h3>
+            <p>Models weight, BMI, and related markers over time under different dose histories.</p>
+          </article>
+          <article class="card">
+            <h3>Safety and tolerability agent</h3>
+            <p>Models adverse-event occurrence, severity, persistence, recurrence, and discontinuation.</p>
+          </article>
+          <article class="card">
+            <h3>Dose-response agent</h3>
+            <p>Estimates relationships between dose level and benefit-risk outcomes.</p>
+          </article>
+          <article class="card">
+            <h3>Exposure-response agent</h3>
+            <p>Relates drug exposure to efficacy and adverse effects when PK or concentration data exist.</p>
+          </article>
+          <article class="card">
+            <h3>ML stratification agent</h3>
+            <p>Identifies patient profiles associated with response, non-response, intolerance, or dropout.</p>
+          </article>
+          <article class="card">
+            <h3>Titration-policy agent</h3>
+            <p>Simulates escalation, hold, dose reduction, restart, and stopping rules.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="callout">
+          <h2>From fragmented data to study-design evidence.</h2>
+          <p>
+            The workbench produces structured evidence for clinical and strategic decisions:
+            candidate dosing strategies, titration rules, expected efficacy, expected adverse-event
+            burden, dropout risk, subgroup behaviour, model disagreement, uncertainty, and
+            recommended next studies.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="cta-band">
+          <h2>Build a workbench for your next R&amp;D decision.</h2>
+          <a class="button secondary" href="contact.html">Discuss a Pharma R&amp;D Workbench</a>
+        </div>
+      </section>
+    </main>
+    <div data-include="partials/site-footer.html"></div>
+  </body>
+</html>

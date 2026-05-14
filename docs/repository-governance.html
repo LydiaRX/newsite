@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LydiaRX AG Documentation — Repository Governance</title>
+    <meta
+      name="description"
+      content="Repository governance for the LydiaRX static site, including specification authority, documentation update rules, coding-style pointers, and verification workflow."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+    <script type="module" src="partials-loader.js"></script>
+  </head>
+  <body data-page="technical">
+    <div data-include="partials/site-header.html"></div>
+    <main class="page-shell">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a> / Repository Governance</nav>
+
+      <section class="page-hero">
+        <p class="eyebrow">LydiaRX AG Documentation</p>
+        <h1>Repository governance</h1>
+        <p class="hero-text">
+          The LydiaRX site is backed by DS specifications and shared repository rules. This page
+          explains how public pages, technical pages, and the specification set must stay synchronized.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Source-of-truth model</h2>
+        <div class="summary-grid">
+          <article class="content-panel">
+            <h3>AGENTS.md</h3>
+            <p>Root guidance for future agents, reading order, current local skill catalog, runtime defaults, and key paths.</p>
+          </article>
+          <article class="content-panel">
+            <h3>DS specifications</h3>
+            <p>Authoritative contracts for vision, coding style, site architecture, visual system, delivery model, and content governance.</p>
+          </article>
+          <article class="content-panel">
+            <h3>Technical pages</h3>
+            <p>Browsable explanations of repository layout, project architecture, and update obligations.</p>
+          </article>
+          <article class="content-panel">
+            <h3>Public pages</h3>
+            <p>Branded LydiaRX narratives that must remain aligned with the constraints and claim boundaries defined in the DS set.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Required update behavior</h2>
+        <div class="card-grid">
+          <article class="card">
+            <h3>When content changes</h3>
+            <p>Update the affected public page and the matching DS file so positioning, structure, and claim boundaries remain aligned.</p>
+          </article>
+          <article class="card">
+            <h3>When structure changes</h3>
+            <p>Update navigation, partials, technical pages, and the relevant DS sections together rather than in isolated edits.</p>
+          </article>
+          <article class="card">
+            <h3>When style changes</h3>
+            <p>Adjust `docs/styles.css`, confirm the visual system still matches DS003, and keep the site responsive across the page set.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Verification workflow</h2>
+        <div class="content-panel">
+          <p class="section-intro">
+            The project intentionally avoids a build pipeline. Verification is therefore performed
+            through lightweight repository checks that confirm structure, links, matrix generation,
+            and static delivery.
+          </p>
+          <ul class="mono-list">
+            <li><code>node .agents/skills/gamp_specs/scripts/generate_specs_matrix.mjs</code></li>
+            <li><code>node .agents/skills/gamp_specs/scripts/verify_docs_links.mjs</code></li>
+            <li><code>node .agents/skills/gamp_specs/scripts/verify_static_site.js docs --path / --path /project-architecture.html --path /specsLoader.html</code></li>
+            <li><code>./fileSizesCheck.sh</code></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="resource-grid">
+          <article class="resource-card">
+            <span class="resource-tag">Authority</span>
+            <h3>DS001 Coding Style</h3>
+            <p>Use DS001 for coding style, source layout, file-size guidance, and verification conventions.</p>
+            <a href="specsLoader.html?spec=DS001-coding-style.md">Open DS001</a>
+          </article>
+          <article class="resource-card">
+            <span class="resource-tag">Matrix</span>
+            <h3>Specification Matrix</h3>
+            <p>Browse the generated DS inventory and navigate into the individual specifications.</p>
+            <a href="specsLoader.html?spec=matrix.md">Open specification matrix</a>
+          </article>
+        </div>
+      </section>
+    </main>
+    <div data-include="partials/site-footer.html"></div>
+  </body>
+</html>

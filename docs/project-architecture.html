@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LydiaRX AG Documentation — Project Architecture</title>
+    <meta
+      name="description"
+      content="Technical overview of the LydiaRX static site repository, including page structure, documentation layout, imported local skill catalog, and delivery model."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+    <script type="module" src="partials-loader.js"></script>
+  </head>
+  <body data-page="technical">
+    <div data-include="partials/site-header.html"></div>
+    <main class="page-shell">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a> / Project Architecture</nav>
+
+      <section class="page-hero">
+        <p class="eyebrow">LydiaRX AG Documentation</p>
+        <h1>Project architecture</h1>
+        <p class="hero-text">
+          This page explains how the public LydiaRX site, the technical pages, the DS
+          specifications, and the imported local skill catalog fit together inside one static output.
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="split-grid">
+          <div>
+            <h2>Repository structure</h2>
+            <p class="section-intro">
+              The repository publishes its output from `docs/`. Public pages, technical pages,
+              shared CSS, partials, assets, and the DS set all live under that root so the result
+              stays deployable without a separate build system.
+            </p>
+            <ul class="mono-list">
+              <li><code>docs/*.html</code> — public routes and technical documentation pages.</li>
+              <li><code>docs/partials/</code> — shared header and footer fragments.</li>
+              <li><code>docs/assets/</code> — static SVGs and reusable assets.</li>
+              <li><code>docs/specs/</code> — DS files and the generated matrix.</li>
+              <li><code>AGENTS.md</code> — root agent guidance and current skill catalog.</li>
+            </ul>
+          </div>
+          <div class="diagram-panel">
+            <h3>Host-project documentation model</h3>
+            <img class="diagram-image" src="assets/diagram-project-architecture.svg" alt="Diagram showing public pages, technical documentation, and DS specifications converging into the shared docs output." />
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Current local skill catalog</h2>
+        <p class="section-intro">
+          The repository includes imported local skills used for bootstrap, review, and downstream
+          agent workflows. They are repository tooling rather than public site pages.
+        </p>
+        <div class="resource-grid">
+          <article class="resource-card">
+            <span class="resource-tag">Local skill</span>
+            <h3>achilles_specs</h3>
+            <p>Achilles-oriented runtime and coding-style guidance.</p>
+            <p class="meta-code"><code>.agents/skills/achilles_specs/</code></p>
+          </article>
+          <article class="resource-card">
+            <span class="resource-tag">Local skill</span>
+            <h3>antropic_skill_build</h3>
+            <p>Portable baseline for self-contained Anthropic-style skills.</p>
+            <p class="meta-code"><code>.agents/skills/antropic_skill_build/</code></p>
+          </article>
+          <article class="resource-card">
+            <span class="resource-tag">Local skill</span>
+            <h3>article_build</h3>
+            <p>Article rebuild workflow for article-owned plans and assets.</p>
+            <p class="meta-code"><code>.agents/skills/article_build/</code></p>
+          </article>
+          <article class="resource-card">
+            <span class="resource-tag">Local skill</span>
+            <h3>cskill_build</h3>
+            <p>Specification-driven conventions for C-Skills.</p>
+            <p class="meta-code"><code>.agents/skills/cskill_build/</code></p>
+          </article>
+          <article class="resource-card">
+            <span class="resource-tag">Local skill</span>
+            <h3>dgskill_build</h3>
+            <p>Dynamic code-generation skill conventions.</p>
+            <p class="meta-code"><code>.agents/skills/dgskill_build/</code></p>
+          </article>
+          <article class="resource-card">
+            <span class="resource-tag">Local skill</span>
+            <h3>gamp_specs</h3>
+            <p>Bootstrap rules for AGENTS, DS files, documentation, and synchronization.</p>
+            <p class="meta-code"><code>.agents/skills/gamp_specs/</code></p>
+          </article>
+          <article class="resource-card">
+            <span class="resource-tag">Local skill</span>
+            <h3>oskill_build</h3>
+            <p>Orchestration-skill conventions for planner-style workflows.</p>
+            <p class="meta-code"><code>.agents/skills/oskill_build/</code></p>
+          </article>
+          <article class="resource-card">
+            <span class="resource-tag">Local skill</span>
+            <h3>review_specs</h3>
+            <p>Step-by-step DS review and reconciliation workflow.</p>
+            <p class="meta-code"><code>.agents/skills/review_specs/</code></p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Key documentation entry points</h2>
+        <div class="resource-grid">
+          <article class="resource-card">
+            <span class="resource-tag">Coding style</span>
+            <h3>DS001 Coding Style</h3>
+            <p>Canonical rules for source layout, file size guidance, HTML structure, CSS ownership, and lightweight verification.</p>
+            <a href="specsLoader.html?spec=DS001-coding-style.md">Open DS001</a>
+          </article>
+          <article class="resource-card">
+            <span class="resource-tag">Governance</span>
+            <h3>Repository Governance</h3>
+            <p>Update obligations, specification authority, and delivery constraints for public and technical pages.</p>
+            <a href="repository-governance.html">Open governance page</a>
+          </article>
+          <article class="resource-card">
+            <span class="resource-tag">Specifications</span>
+            <h3>DS Matrix</h3>
+            <p>Browse the complete specification set, including site vision, information architecture, visual system, and content governance.</p>
+            <a href="specsLoader.html?spec=matrix.md">Open DS matrix</a>
+          </article>
+        </div>
+      </section>
+    </main>
+    <div data-include="partials/site-footer.html"></div>
+  </body>
+</html>
