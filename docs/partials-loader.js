@@ -1,3 +1,40 @@
+const THEME_STORAGE_KEY = 'lydiarx-theme';
+const FUSION_THEME = 'fusion';
+const DEFAULT_THEME = 'default';
+
+function resolveTheme() {
+  let theme = document.documentElement.dataset.theme || DEFAULT_THEME;
+
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const requestedTheme = params.get('theme');
+
+    if (requestedTheme === FUSION_THEME) {
+      localStorage.setItem(THEME_STORAGE_KEY, FUSION_THEME);
+      theme = FUSION_THEME;
+    } else if (requestedTheme === DEFAULT_THEME) {
+      localStorage.removeItem(THEME_STORAGE_KEY);
+      theme = DEFAULT_THEME;
+    } else if (localStorage.getItem(THEME_STORAGE_KEY) === FUSION_THEME) {
+      theme = FUSION_THEME;
+    }
+  } catch (error) {
+    theme = theme === FUSION_THEME ? FUSION_THEME : DEFAULT_THEME;
+  }
+
+  document.documentElement.dataset.theme = theme;
+  window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
+  return theme;
+}
+
+function syncBodyTheme() {
+  if (document.body) {
+    document.body.dataset.theme = document.documentElement.dataset.theme || DEFAULT_THEME;
+  }
+}
+
+resolveTheme();
+
 async function loadPartial(target) {
   const includePath = target.dataset.include;
   const response = await fetch(includePath);
@@ -104,6 +141,7 @@ function initializeNavigation() {
 }
 
 async function bootstrapPartials() {
+  syncBodyTheme();
   const partialTargets = [...document.querySelectorAll('[data-include]')];
   await Promise.all(partialTargets.map(loadPartial));
   activateCurrentPage();

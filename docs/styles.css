@@ -23,6 +23,7 @@
   --radius-md: 18px;
   --radius-sm: 14px;
   --shell: min(1180px, calc(100vw - 48px));
+  --nav-overlay-top: 94px;
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -806,6 +807,396 @@ th {
   background: rgba(255, 244, 245, 0.94);
 }
 
+html[data-theme="fusion"] {
+  --logo-primary: #ffb152;
+  --logo-accent: #5da8ff;
+  --logo-accent-strong: #7d88ff;
+  --logo-sky: #a78dff;
+  --bg: #0b0e14;
+  --bg-soft: #111520;
+  --bg-strong: #171d2b;
+  --surface: rgba(18, 21, 31, 0.84);
+  --surface-soft: rgba(24, 28, 41, 0.92);
+  --surface-accent: rgba(255, 122, 89, 0.12);
+  --surface-blue: rgba(0, 130, 251, 0.12);
+  --text: #d6deee;
+  --text-strong: #f8fbff;
+  --muted: #9da8bc;
+  --muted-strong: #c7d1e3;
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --shadow: 0 28px 68px rgba(0, 0, 0, 0.48);
+  --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.34);
+  --font-body: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html[data-theme="fusion"] body {
+  color-scheme: dark;
+  background:
+    linear-gradient(180deg, #05070b 0%, #0a0d14 30%, #0b0f16 100%);
+  color: var(--text);
+  overflow-x: clip;
+}
+
+html[data-theme="fusion"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 137, 24, 0.24), transparent 18%),
+    radial-gradient(circle at 82% 10%, rgba(0, 130, 251, 0.22), transparent 20%),
+    radial-gradient(circle at 54% 24%, rgba(167, 141, 255, 0.16), transparent 22%),
+    linear-gradient(90deg, rgba(105, 51, 0, 0.18) 0%, rgba(18, 21, 31, 0) 28%, rgba(18, 21, 31, 0) 72%, rgba(0, 105, 166, 0.14) 100%);
+  filter: blur(26px);
+  animation: fusionDrift 18s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+html[data-theme="fusion"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 28% 34%, rgba(249, 69, 67, 0.08), transparent 16%),
+    radial-gradient(circle at 70% 42%, rgba(0, 152, 243, 0.08), transparent 18%);
+  filter: blur(70px);
+  opacity: 0.9;
+  animation: fusionPulse 12s ease-in-out infinite;
+  z-index: 0;
+}
+
+html[data-theme="fusion"] .site-header {
+  position: sticky;
+  z-index: 80;
+  isolation: isolate;
+}
+
+html[data-theme="fusion"] main,
+html[data-theme="fusion"] .site-footer {
+  position: relative;
+  z-index: 1;
+}
+
+html[data-theme="fusion"] a {
+  color: #f6c777;
+}
+
+html[data-theme="fusion"] a:hover {
+  color: #ffffff;
+}
+
+html[data-theme="fusion"] .header-shell {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(90deg, rgba(105, 51, 0, 0.18) 0%, rgba(18, 21, 31, 0.86) 30%, rgba(15, 18, 28, 0.9) 68%, rgba(0, 105, 166, 0.18) 100%);
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(14px);
+}
+
+html[data-theme="fusion"] .header-shell::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(var(--radius-xl) - 1px);
+  background:
+    linear-gradient(163deg, rgba(255, 137, 24, 0.18) 0%, rgba(162, 41, 4, 0.16) 34%, rgba(0, 0, 0, 0) 62%, rgba(0, 152, 243, 0.16) 100%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+html[data-theme="fusion"] .header-shell > * {
+  position: relative;
+  z-index: 1;
+}
+
+html[data-theme="fusion"] .brand-copy strong,
+html[data-theme="fusion"] .brand-copy small,
+html[data-theme="fusion"] h1,
+html[data-theme="fusion"] h2,
+html[data-theme="fusion"] h3,
+html[data-theme="fusion"] .cta-band h2,
+html[data-theme="fusion"] .cta-band p {
+  color: var(--text-strong);
+}
+
+html[data-theme="fusion"] .eyebrow,
+html[data-theme="fusion"] .kicker {
+  color: #f7c36d;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.18em;
+}
+
+html[data-theme="fusion"] .hero-subtitle {
+  color: #eef3ff;
+}
+
+html[data-theme="fusion"] .hero-text,
+html[data-theme="fusion"] .lead,
+html[data-theme="fusion"] .section-intro,
+html[data-theme="fusion"] p,
+html[data-theme="fusion"] li,
+html[data-theme="fusion"] .caption,
+html[data-theme="fusion"] .breadcrumb,
+html[data-theme="fusion"] .loader-heading small,
+html[data-theme="fusion"] .loader-heading small a {
+  color: var(--muted);
+}
+
+html[data-theme="fusion"] .nav-link,
+html[data-theme="fusion"] .nav-link--toggle {
+  color: var(--muted-strong);
+  border-radius: 999px;
+}
+
+html[data-theme="fusion"] .nav-link:hover,
+html[data-theme="fusion"] .nav-link--toggle:hover,
+html[data-theme="fusion"] .nav-link[aria-current="page"],
+html[data-theme="fusion"] .nav-link--toggle.is-active,
+html[data-theme="fusion"] .nav-group.is-active > .nav-link--toggle,
+html[data-theme="fusion"] .nav-group[open] > .nav-link--toggle {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="fusion"] .nav-cta,
+html[data-theme="fusion"] .button.primary {
+  color: #171a24;
+  border-color: transparent;
+  background: linear-gradient(135deg, #ffb657 0%, #ff7759 54%, #f94543 100%);
+  box-shadow: 0 16px 38px rgba(249, 119, 0, 0.28);
+}
+
+html[data-theme="fusion"] .nav-cta:hover,
+html[data-theme="fusion"] .button.primary:hover {
+  color: #12151d;
+  background: linear-gradient(135deg, #ffc46d 0%, #ff8a68 54%, #ff5f52 100%);
+  border-color: transparent;
+}
+
+html[data-theme="fusion"] .button.secondary {
+  color: var(--text-strong);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+html[data-theme="fusion"] .button.secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+html[data-theme="fusion"] .nav-dropdown,
+html[data-theme="fusion"] .hero-card,
+html[data-theme="fusion"] .card,
+html[data-theme="fusion"] .metric,
+html[data-theme="fusion"] .callout,
+html[data-theme="fusion"] .content-panel,
+html[data-theme="fusion"] .profile-card,
+html[data-theme="fusion"] .resource-card,
+html[data-theme="fusion"] .contact-card,
+html[data-theme="fusion"] .page__panel,
+html[data-theme="fusion"] .spec-meta__item,
+html[data-theme="fusion"] .content pre,
+html[data-theme="fusion"] .cta-band,
+html[data-theme="fusion"] .runtime-error,
+html[data-theme="fusion"] .error-panel {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(25, 29, 42, 0.88), rgba(14, 17, 26, 0.94));
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+html[data-theme="fusion"] .nav-group,
+html[data-theme="fusion"] .site-nav,
+html[data-theme="fusion"] .nav-dropdown {
+  z-index: 90;
+}
+
+html[data-theme="fusion"] .metric,
+html[data-theme="fusion"] .cta-band,
+html[data-theme="fusion"] .callout {
+  background:
+    radial-gradient(circle at top left, rgba(255, 121, 89, 0.1), transparent 42%),
+    linear-gradient(180deg, rgba(24, 28, 41, 0.92), rgba(14, 17, 26, 0.96));
+}
+
+html[data-theme="fusion"] .callout {
+  border-left-color: rgba(255, 182, 87, 0.8);
+}
+
+html[data-theme="fusion"] .nav-dropdown-link {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.04);
+}
+
+html[data-theme="fusion"] .nav-dropdown-link strong {
+  color: var(--text-strong);
+}
+
+html[data-theme="fusion"] .nav-dropdown-link span {
+  color: var(--muted);
+}
+
+html[data-theme="fusion"] .nav-dropdown-link:hover,
+html[data-theme="fusion"] .nav-dropdown-link[aria-current="page"] {
+  border-color: rgba(255, 255, 255, 0.1);
+  background:
+    radial-gradient(circle at left top, rgba(255, 121, 89, 0.1), transparent 48%),
+    rgba(255, 255, 255, 0.05);
+}
+
+html[data-theme="fusion"] .hero,
+html[data-theme="fusion"] .page-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+html[data-theme="fusion"] .hero::before,
+html[data-theme="fusion"] .page-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 121, 89, 0.18), transparent 26%),
+    radial-gradient(circle at 78% 10%, rgba(0, 130, 251, 0.16), transparent 24%);
+  filter: blur(22px);
+  animation: fusionPulse 14s ease-in-out infinite alternate;
+}
+
+html[data-theme="fusion"] .hero-grid,
+html[data-theme="fusion"] .split-grid,
+html[data-theme="fusion"] .page-hero > *,
+html[data-theme="fusion"] .section > * {
+  position: relative;
+  z-index: 1;
+}
+
+html[data-theme="fusion"] .section + .section,
+html[data-theme="fusion"] .site-footer {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+html[data-theme="fusion"] .site-footer {
+  background: linear-gradient(180deg, rgba(13, 16, 24, 0.4), rgba(9, 11, 18, 0.84));
+}
+
+html[data-theme="fusion"] .site-footer a:hover,
+html[data-theme="fusion"] .footer-link,
+html[data-theme="fusion"] .content code,
+html[data-theme="fusion"] .mono-list code,
+html[data-theme="fusion"] .meta-code code {
+  color: #f7c36d;
+}
+
+html[data-theme="fusion"] .resource-tag,
+html[data-theme="fusion"] .spec-status--active,
+html[data-theme="fusion"] .spec-status--implemented {
+  background: rgba(255, 182, 87, 0.12);
+  color: #ffd394;
+}
+
+html[data-theme="fusion"] .spec-status--draft,
+html[data-theme="fusion"] .spec-status--in-progress,
+html[data-theme="fusion"] .spec-status--planned,
+html[data-theme="fusion"] .spec-status--review-needed,
+html[data-theme="fusion"] .spec-status--unknown {
+  background: rgba(93, 168, 255, 0.12);
+  color: #a9d4ff;
+}
+
+html[data-theme="fusion"] .breadcrumb a,
+html[data-theme="fusion"] .footer-list a,
+html[data-theme="fusion"] .resource-card a,
+html[data-theme="fusion"] .footer-link {
+  color: var(--muted-strong);
+}
+
+html[data-theme="fusion"] .diagram-image {
+  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.34));
+}
+
+html[data-theme="fusion"] .caption {
+  color: #b4bfd3;
+}
+
+html[data-theme="fusion"] .table-wrap {
+  border-radius: var(--radius-lg);
+}
+
+html[data-theme="fusion"] .hero-card,
+html[data-theme="fusion"] .card,
+html[data-theme="fusion"] .metric,
+html[data-theme="fusion"] .resource-card,
+html[data-theme="fusion"] .contact-card,
+html[data-theme="fusion"] .profile-card,
+html[data-theme="fusion"] .cta-band,
+html[data-theme="fusion"] .callout {
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease,
+    border-color 0.28s ease,
+    background 0.28s ease;
+}
+
+html[data-theme="fusion"] .hero-card:hover,
+html[data-theme="fusion"] .card:hover,
+html[data-theme="fusion"] .metric:hover,
+html[data-theme="fusion"] .resource-card:hover,
+html[data-theme="fusion"] .contact-card:hover,
+html[data-theme="fusion"] .profile-card:hover,
+html[data-theme="fusion"] .cta-band:hover,
+html[data-theme="fusion"] .callout:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 30px 72px rgba(0, 0, 0, 0.42);
+}
+
+html[data-theme="fusion"] .button.primary,
+html[data-theme="fusion"] .nav-cta {
+  animation: fusionButtonGlow 3.2s ease-in-out infinite;
+}
+
+html[data-theme="fusion"] .button.primary:hover,
+html[data-theme="fusion"] .nav-cta:hover {
+  animation-play-state: paused;
+}
+
+@keyframes fusionDrift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate3d(0, -18px, 0) scale(1.05);
+  }
+}
+
+@keyframes fusionPulse {
+  0% {
+    opacity: 0.72;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fusionButtonGlow {
+  0%,
+  100% {
+    box-shadow: 0 16px 38px rgba(249, 119, 0, 0.22);
+  }
+
+  50% {
+    box-shadow: 0 18px 42px rgba(0, 130, 251, 0.24);
+  }
+}
+
 @media (max-width: 1120px) {
   .brand-copy {
     display: none;
@@ -840,7 +1231,7 @@ th {
 
   .site-nav {
     position: fixed;
-    top: 94px;
+    top: var(--nav-overlay-top);
     left: 14px;
     right: 14px;
     display: none;
@@ -891,6 +1282,19 @@ th {
   .loader-heading {
     flex-direction: column;
     align-items: start;
+  }
+
+  html[data-theme="fusion"] .site-nav {
+    background: rgba(12, 15, 24, 0.96);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  html[data-theme="fusion"] .nav-link,
+  html[data-theme="fusion"] .nav-link--toggle,
+  html[data-theme="fusion"] .site-nav .nav-cta,
+  html[data-theme="fusion"] .nav-dropdown {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
   }
 }
 

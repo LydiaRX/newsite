@@ -8,10 +8,34 @@
       name="description"
       content="Contact LydiaRX AG for partnerships in genomic AI, regulated agentic AI, pharma R&amp;D workbenches, secure biomedical data collaboration, venture formation, and investment."
     />
+    <script>
+      (() => {
+        const storageKey = 'lydiarx-theme';
+        const params = new URLSearchParams(window.location.search);
+        const requestedTheme = params.get('theme');
+        let theme = 'default';
+
+        try {
+          if (requestedTheme === 'fusion') {
+            localStorage.setItem(storageKey, 'fusion');
+            theme = 'fusion';
+          } else if (requestedTheme === 'default') {
+            localStorage.removeItem(storageKey);
+          } else if (localStorage.getItem(storageKey) === 'fusion') {
+            theme = 'fusion';
+          }
+        } catch (error) {
+          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+        }
+
+        document.documentElement.dataset.theme = theme;
+        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+      })();
+    </script>
     <link rel="stylesheet" href="styles.css" />
     <script type="module">
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-      mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+      mermaid.initialize({ startOnLoad: true, theme: window.__mermaidTheme || 'neutral' });
     </script>
     <script type="module" src="partials-loader.js"></script>
   </head>

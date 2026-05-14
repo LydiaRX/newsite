@@ -8,10 +8,34 @@
       name="description"
       content="LydiaRX AG is a Swiss research-led venture studio building venture vehicles, platforms, and infrastructure for genomic AI, regulated agentic AI, secure biomedical data collaboration, and automated R&amp;D."
     />
+    <script>
+      (() => {
+        const storageKey = 'lydiarx-theme';
+        const params = new URLSearchParams(window.location.search);
+        const requestedTheme = params.get('theme');
+        let theme = 'default';
+
+        try {
+          if (requestedTheme === 'fusion') {
+            localStorage.setItem(storageKey, 'fusion');
+            theme = 'fusion';
+          } else if (requestedTheme === 'default') {
+            localStorage.removeItem(storageKey);
+          } else if (localStorage.getItem(storageKey) === 'fusion') {
+            theme = 'fusion';
+          }
+        } catch (error) {
+          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+        }
+
+        document.documentElement.dataset.theme = theme;
+        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+      })();
+    </script>
     <link rel="stylesheet" href="styles.css" />
     <script type="module">
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-      mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+      mermaid.initialize({ startOnLoad: true, theme: window.__mermaidTheme || 'neutral' });
     </script>
     <script type="module" src="partials-loader.js"></script>
   </head>
@@ -36,13 +60,12 @@
             </div>
           </div>
           <aside class="hero-card">
-            <strong>Venture infrastructure for scientific markets</strong>
-            <ul class="checklist">
-              <li>Genomic AI and pharmacogenomic venture formation.</li>
-              <li>Controlled enterprise AI workflows for regulated environments.</li>
-              <li>Secure biomedical collaboration and compute-to-data infrastructure.</li>
-              <li>Model-informed analytical workbenches for R&amp;D decision-making.</li>
-            </ul>
+            <strong>Built for scientific markets where reliability matters.</strong>
+            <p>
+              LydiaRX combines venture formation with deployable AI, secure biomedical collaboration,
+              and evidence-oriented technical systems.
+            </p>
+            <p class="caption">Pharma, biotechnology, genomic medicine, and regulated enterprise workflows.</p>
           </aside>
         </div>
       </section>
@@ -61,11 +84,11 @@
               The focus stays on markets where AI must be traceable, data must be protected, and
               scientific outputs must be defensible.
             </p>
-            <p class="lead">
-              In practice, that means pairing venture formation with a deployable AI and data stack:
-              one side shapes companies, products, and partner structures; the other side provides
-              the controlled technical foundation required for regulated scientific work.
-            </p>
+            <div class="button-row">
+              <a class="button secondary" href="venture-studio.html">Venture Studio</a>
+              <a class="button secondary" href="lydiarx-ai-studio.html">AI Studio</a>
+              <a class="button secondary" href="omics-firewall.html">Omics Firewall</a>
+            </div>
           </div>
           <div class="diagram-panel">
             <img class="diagram-image" src="assets/diagram-home-pillars.svg" alt="Diagram showing Venture Studio, AI Studio, and Genomic AI converging into LydiaRX and then into venture outcomes." />
@@ -78,121 +101,11 @@
       </section>
 
       <section class="section">
-        <h2>Three strategic pillars</h2>
-        <div class="card-grid">
-          <article class="card">
-            <h3>Venture Studio</h3>
-            <p>
-              We incubate venture vehicles around governed datasets, AI models, validated workflows,
-              secure infrastructure components, and high-value research assets.
-            </p>
-          </article>
-          <article class="card">
-            <h3>LydiaRX AI Studio</h3>
-            <p>
-              We develop enterprise agentic AI infrastructure for automated R&amp;D, regulated
-              documentation, scientific automation, private AI deployments, and controlled AI workflows.
-            </p>
-          </article>
-          <article class="card">
-            <h3>Genomic AI &amp; Omics Infrastructure</h3>
-            <p>
-              We build genomic-clinical AI platforms, pharma-facing analytics, pharmacogenomics
-              vehicles, and secure access infrastructure for sensitive biomedical data.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2>Selected solution areas</h2>
-        <div class="card-grid">
-          <article class="card">
-            <h3>Genomic AI</h3>
-            <p>
-              Research-grade genomic-clinical AI for cohort analytics, biomarker discovery,
-              pharmacogenomics, trial feasibility, and pharma-facing research workspaces.
-            </p>
-          </article>
-          <article class="card">
-            <h3>LydiaRX AI Studio</h3>
-            <p>
-              Agentic AI infrastructure for inspectable workflows, private AI deployments,
-              automated R&amp;D, regulated documentation, scientific reporting, and enterprise knowledge work.
-            </p>
-          </article>
-          <article class="card">
-            <h3>Omics Firewall</h3>
-            <p>
-              Secure collaboration infrastructure for sensitive omics and biomedical data with
-              provenance, auditability, and controlled output release.
-            </p>
-          </article>
-          <article class="card">
-            <h3>Pharma R&amp;D Workbenches</h3>
-            <p>
-              Model-informed environments for dose optimisation, titration strategy, patient
-              stratification, simulation, and study-design evidence.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2>Built for regulated scientific markets.</h2>
-        <p class="section-intro">
-          LydiaRX focuses on AI and data infrastructure where reliability matters: pharma R&amp;D,
-          biotechnology, genomic medicine, secure biomedical collaboration, and regulated enterprise
-          workflows. The objective is to create venture vehicles that are scientifically grounded,
-          technically defensible, and commercially relevant.
-        </p>
-      </section>
-
-      <section class="section">
-        <h2>Who we build with</h2>
-        <p class="section-intro">
-          LydiaRX works with organisations that need scientifically serious infrastructure,
-          venture-building discipline, and governed AI capabilities rather than generic software delivery.
-        </p>
-        <div class="card-grid">
-          <article class="card">
-            <h3>Strategic investors</h3>
-            <p>
-              Partners interested in defensible venture vehicles built from governed data, software,
-              scientific workflows, and regulated infrastructure.
-            </p>
-          </article>
-          <article class="card">
-            <h3>Pharma and biotechnology teams</h3>
-            <p>
-              Organisations seeking genomic AI, secure collaboration, regulated documentation, and
-              model-informed analytical workbenches.
-            </p>
-          </article>
-          <article class="card">
-            <h3>Research institutions and hospitals</h3>
-            <p>
-              Collaborators building evidence packages, governed data programs, translational research
-              assets, and new partnership models.
-            </p>
-          </article>
-          <article class="card">
-            <h3>Government and infrastructure partners</h3>
-            <p>
-              Stakeholders interested in secure national-scale biomedical data access, compute-to-data
-              environments, and controlled AI-supported operations.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section">
         <div class="cta-band">
-          <h2>Work with LydiaRX on venture formation, scientific automation, and governed AI infrastructure.</h2>
+          <h2>Built with investors, pharma, and research partners.</h2>
           <p>
-            We work with investors, pharma companies, biotechnology firms, research institutions,
-            hospitals, governments, and technical partners seeking defensible ventures from governed
-            data, AI systems, and scientific infrastructure.
+            LydiaRX works with organisations that need venture formation, governed AI systems,
+            secure biomedical collaboration, and technically defensible research infrastructure.
           </p>
           <div class="button-row">
             <a class="button primary" href="contact.html">Contact LydiaRX</a>

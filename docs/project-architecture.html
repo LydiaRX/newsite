@@ -8,10 +8,34 @@
       name="description"
       content="Technical overview of the LydiaRX static site repository, including page structure, documentation layout, imported local skill catalog, and delivery model."
     />
+    <script>
+      (() => {
+        const storageKey = 'lydiarx-theme';
+        const params = new URLSearchParams(window.location.search);
+        const requestedTheme = params.get('theme');
+        let theme = 'default';
+
+        try {
+          if (requestedTheme === 'fusion') {
+            localStorage.setItem(storageKey, 'fusion');
+            theme = 'fusion';
+          } else if (requestedTheme === 'default') {
+            localStorage.removeItem(storageKey);
+          } else if (localStorage.getItem(storageKey) === 'fusion') {
+            theme = 'fusion';
+          }
+        } catch (error) {
+          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+        }
+
+        document.documentElement.dataset.theme = theme;
+        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+      })();
+    </script>
     <link rel="stylesheet" href="styles.css" />
     <script type="module">
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-      mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+      mermaid.initialize({ startOnLoad: true, theme: window.__mermaidTheme || 'neutral' });
     </script>
     <script type="module" src="partials-loader.js"></script>
   </head>
@@ -37,6 +61,11 @@
               The repository publishes its output from `docs/`. Public pages, technical pages,
               shared CSS, partials, assets, and the DS set all live under that root so the result
               stays deployable without a separate build system.
+            </p>
+            <p class="lead">
+              The same output also supports an opt-in visual review mode for design exploration.
+              Appending <code>?theme=fusion</code> activates the alternate presentation and
+              <code>?theme=default</code> clears it without changing the underlying page structure.
             </p>
             <ul class="mono-list">
               <li><code>docs/*.html</code> — public routes and technical documentation pages.</li>

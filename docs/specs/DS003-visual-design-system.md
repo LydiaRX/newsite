@@ -28,6 +28,8 @@ Mermaid remains available for maintainable documentation diagrams, but public-fa
 
 Responsive behavior must collapse comfortably on tablet and mobile. Navigation must switch to a controlled mobile menu before links become cramped, and content grids must reduce to single-column layouts without obscuring key information. The header itself should remain prominent and refined, but it must still resolve to a single-row desktop bar rather than stacking multiple navigation rows.
 
+The default LydiaRX visual system remains the authoritative presentation. However, the site may also expose explicitly opt-in review themes for design exploration when those variants preserve the same content structure and page hierarchy. Alternate themes must be activated intentionally, must not leak into the default presentation, and must remain visibly coherent across public pages, technical pages, navigation, and diagrams rather than only recoloring isolated components.
+
 ## Decisions & Questions
 
 ### Question #1: Why does the first version avoid animation and decorative media?
