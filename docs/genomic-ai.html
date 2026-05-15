@@ -13,35 +13,43 @@
         const DEFAULT_THEME = 'default';
         const FUSION_THEME = 'fusion';
         const INSPIRATION_THEME = 'inspiration';
+        const SITE_DEFAULT_THEME = INSPIRATION_THEME;
         const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const VALID_THEMES = new Set([DEFAULT_THEME, ...REVIEW_THEMES]);
         const THEME_STORAGE_KEY = 'lydiarx-theme';
         const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
         const DEFAULT_DEV_MODE = true;
         const params = new URLSearchParams(window.location.search);
         const requestedTheme = params.get('theme');
-        let theme = DEFAULT_THEME;
+        let theme = SITE_DEFAULT_THEME;
 
         try {
           const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
           const hasDevMode =
             storedDevMode === 'true' ||
             (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+          const canUseTheme = (themeName) =>
+            themeName === DEFAULT_THEME ||
+            themeName === SITE_DEFAULT_THEME ||
+            (REVIEW_THEMES.has(themeName) && hasDevMode);
 
-          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
-            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+          if (requestedTheme && VALID_THEMES.has(requestedTheme) && canUseTheme(requestedTheme)) {
+            if (requestedTheme === SITE_DEFAULT_THEME) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            } else {
+              localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            }
             theme = requestedTheme;
-          } else if (requestedTheme === DEFAULT_THEME) {
-            localStorage.removeItem(THEME_STORAGE_KEY);
           } else {
             const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+            if (storedTheme && VALID_THEMES.has(storedTheme) && canUseTheme(storedTheme)) {
               theme = storedTheme;
-            } else if (!hasDevMode) {
+            } else if (!hasDevMode || storedTheme === SITE_DEFAULT_THEME) {
               localStorage.removeItem(THEME_STORAGE_KEY);
             }
           }
         } catch (error) {
-          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
+          theme = requestedTheme && VALID_THEMES.has(requestedTheme) ? requestedTheme : SITE_DEFAULT_THEME;
         }
 
         document.documentElement.dataset.theme = theme;

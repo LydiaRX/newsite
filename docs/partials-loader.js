@@ -5,6 +5,7 @@ const STORAGE_PROBE_KEY = '__lydiarx-storage-probe__';
 const FUSION_THEME = 'fusion';
 const INSPIRATION_THEME = 'inspiration';
 const DEFAULT_THEME = 'default';
+const SITE_DEFAULT_THEME = INSPIRATION_THEME;
 const DEFAULT_DEV_MODE = true;
 const CONSENT_ACCEPTED = 'accepted';
 const CONSENT_DECLINED = 'declined';
@@ -79,7 +80,7 @@ function removeStorage(key) {
 
 function getCurrentTheme() {
   const theme = document.documentElement.dataset.theme;
-  return VALID_THEMES.has(theme) ? theme : DEFAULT_THEME;
+  return VALID_THEMES.has(theme) ? theme : SITE_DEFAULT_THEME;
 }
 
 function syncBodyTheme() {
@@ -112,13 +113,13 @@ function getStorageConsent() {
 
 function applyTheme(theme, options = {}) {
   const { persist = false } = options;
-  const resolvedTheme = VALID_THEMES.has(theme) ? theme : DEFAULT_THEME;
+  const resolvedTheme = VALID_THEMES.has(theme) ? theme : SITE_DEFAULT_THEME;
   document.documentElement.dataset.theme = resolvedTheme;
   window.__mermaidTheme = resolvedTheme === FUSION_THEME ? 'dark' : 'neutral';
   syncBodyTheme();
 
   if (persist) {
-    if (resolvedTheme === DEFAULT_THEME) {
+    if (resolvedTheme === SITE_DEFAULT_THEME) {
       removeStorage(THEME_STORAGE_KEY);
     } else {
       writeStorage(THEME_STORAGE_KEY, resolvedTheme);
@@ -197,7 +198,7 @@ function renderThemeWidget() {
     transientDevMode = false;
     writeStorage(DEV_MODE_STORAGE_KEY, 'false');
     removeStorage(THEME_STORAGE_KEY);
-    applyTheme(DEFAULT_THEME);
+    applyTheme(SITE_DEFAULT_THEME);
     renderThemeWidget();
     window.location.reload();
   });
@@ -247,7 +248,7 @@ function renderStorageBanner() {
     writeStorage(STORAGE_CONSENT_KEY, CONSENT_DECLINED);
     writeStorage(DEV_MODE_STORAGE_KEY, 'false');
     removeStorage(THEME_STORAGE_KEY);
-    applyTheme(DEFAULT_THEME);
+    applyTheme(SITE_DEFAULT_THEME);
     renderThemeWidget();
     renderStorageBanner();
     window.location.reload();
@@ -580,6 +581,11 @@ function wrapRange(value, minimum, maximum) {
   return minimum + wrapped;
 }
 
+function getLoopDistance(first, second) {
+  const distance = Math.abs(first - second);
+  return Math.min(distance, 1 - distance);
+}
+
 function pickSceneSpeed(random, center = 0.00013, spread = 0.000025) {
   return Math.max(0.00008, center + (random() - 0.5) * spread * 2);
 }
@@ -748,7 +754,16 @@ function drawPolyline(ctx, points, strokeStyle, lineWidth = 1) {
   ctx.beginPath();
   ctx.moveTo(points[0].x, points[0].y);
   for (let index = 1; index < points.length; index += 1) {
-    ctx.lineTo(points[index].x, points[index].y);
+    const previous = points[Math.max(0, index - 1)];
+    const current = points[index];
+    const next = points[Math.min(points.length - 1, index + 1)];
+    const nextNext = points[Math.min(points.length - 1, index + 2)];
+    const tension = 0.35;
+    const cp1x = current.x + (next.x - previous.x) * tension;
+    const cp1y = current.y + (next.y - previous.y) * tension;
+    const cp2x = next.x - (nextNext.x - current.x) * tension;
+    const cp2y = next.y - (nextNext.y - current.y) * tension;
+    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, next.x, next.y);
   }
   ctx.strokeStyle = strokeStyle;
   ctx.lineWidth = lineWidth;
@@ -781,6 +796,43 @@ function resizeInspirationFloor(floor) {
   floor.scene.build(floor, createSeededRandom(floor.seed));
 }
 
+function updateInspirationPointerForFloor(floor, pointerState) {
+  if (!floor.pointer) {
+    floor.pointer = {
+      x: floor.visibleX + floor.visibleWidth * 0.72,
+      y: floor.visibleY + floor.visibleHeight * 0.5,
+      intensity: 0
+    };
+  }
+
+  let targetX = floor.pointer.x;
+  let targetY = floor.pointer.y;
+  let targetIntensity = 0;
+
+  if (pointerState?.active) {
+    const rect = floor.element.getBoundingClientRect();
+    const margin = Math.max(96, Math.min(rect.width, rect.height) * 0.18);
+    const isNear =
+      pointerState.clientX >= rect.left - margin &&
+      pointerState.clientX <= rect.right + margin &&
+      pointerState.clientY >= rect.top - margin &&
+      pointerState.clientY <= rect.bottom + margin;
+
+    if (isNear) {
+      const localX = pointerState.clientX - rect.left;
+      const localY = pointerState.clientY - rect.top;
+      const xRatio = clamp(localX / Math.max(rect.width, 1), 0, 1);
+      targetX = floor.visibleX + localX;
+      targetY = floor.visibleY + localY;
+      targetIntensity = floor.role === 'hero' ? 0.24 + xRatio * 0.58 : 0.16 + xRatio * 0.34;
+    }
+  }
+
+  floor.pointer.x += (targetX - floor.pointer.x) * 0.14;
+  floor.pointer.y += (targetY - floor.pointer.y) * 0.14;
+  floor.pointer.intensity += (targetIntensity - floor.pointer.intensity) * 0.1;
+}
+
 function projectGasCluster(cluster, time, bounds) {
   const drift = time * cluster.travelSpeed + cluster.phase;
   const travel = drift / (Math.PI * 2);
@@ -808,6 +860,23 @@ function projectGasCluster(cluster, time, bounds) {
   };
 }
 
+function getFloorPointerInfluence(floor, x, y, radius) {
+  const pointer = floor.pointer;
+  if (!pointer || pointer.intensity <= 0.01) {
+    return { x: 0, y: 0, strength: 0 };
+  }
+
+  const distance = Math.hypot(pointer.x - x, pointer.y - y);
+  const falloff = clamp(1 - distance / Math.max(radius, 1), 0, 1);
+  const strength = falloff * falloff * pointer.intensity;
+
+  return {
+    x: (pointer.x - x) * 0.045 * strength,
+    y: (pointer.y - y) * 0.035 * strength,
+    strength
+  };
+}
+
 function getHelixClusterState(cluster, time, floor) {
   const region = getSceneRegion(floor);
   const band = getSceneActivityBand(floor);
@@ -817,14 +886,43 @@ function getHelixClusterState(cluster, time, floor) {
     minY: floor.visibleY + floor.visibleHeight * 0.38,
     maxY: floor.visibleY + floor.visibleHeight * 0.62
   });
+  const influence = getFloorPointerInfluence(
+    floor,
+    gas.centerX,
+    gas.centerY,
+    cluster.interactionRadius || cluster.radius * 8
+  );
+  const focus = cluster.focus || 1;
+  const hoverScale = 1 + influence.strength * 0.16 * focus;
+  const breatheX = Math.sin(time * 0.00035 + cluster.phase) * 0.08 + Math.sin(time * 0.00019 + cluster.phase * 1.3) * 0.04;
+  const breatheY = Math.cos(time * 0.00028 + cluster.phase * 0.7) * 0.06 + Math.cos(time * 0.00041 + cluster.phase * 0.9) * 0.03;
+  const breatheScale = 1 + breatheX * focus;
+  const breatheSpan = 1 + breatheY * focus;
+  const unwindFactor = influence.strength * 0.35 * focus;
+  const unwindSeparation = 1 + unwindFactor * 0.6;
 
   return {
-    centerX: gas.centerX,
-    centerY: gas.centerY,
-    tilt: gas.rotation,
-    radiusX: cluster.radius * gas.depth * (0.92 + Math.sin(gas.phase * 1.16 + cluster.phase) * 0.12),
-    radiusY: cluster.radius * (1.46 - gas.depth * 0.34) * (0.72 + Math.cos(gas.phase * 0.94 + cluster.phase) * 0.16),
-    phase: gas.phase
+    centerX: gas.centerX + influence.x * focus + Math.sin(time * 0.00005 + cluster.phase * 0.8) * 4 * focus,
+    centerY: gas.centerY + influence.y * focus + Math.cos(time * 0.00006 + cluster.phase * 1.1) * 3 * focus,
+    tilt: gas.rotation + Math.sin(time * 0.00004 + cluster.phase) * 0.15 + Math.sin(time * 0.00007 + cluster.phase * 1.4) * 0.08,
+    radiusX:
+      cluster.radius *
+      gas.depth *
+      (0.92 + Math.sin(gas.phase * 1.16 + cluster.phase) * 0.12) *
+      hoverScale *
+      breatheScale *
+      unwindSeparation,
+    radiusY:
+      cluster.radius *
+      (1.46 - gas.depth * 0.34) *
+      (0.72 + Math.cos(gas.phase * 0.94 + cluster.phase) * 0.16) *
+      (1 + influence.strength * 0.08 * focus) *
+      breatheScale,
+    span: cluster.span * breatheSpan,
+    phase: gas.phase,
+    interaction: influence.strength,
+    focus,
+    unwindFactor
   };
 }
 
@@ -844,42 +942,91 @@ function projectHelixPoint(cluster, state, progress, strandPhase, time, jitter =
   };
 }
 
+function getHelixColorFromTwist(twist, alpha, baseAlpha = 1) {
+  const normalized = (Math.cos(twist) + 1) * 0.5;
+  const palette = [
+    [29, 107, 108],
+    [106, 180, 164],
+    [237, 147, 102],
+    [228, 96, 126],
+    [214, 176, 101]
+  ];
+  const index = normalized * (palette.length - 1);
+  const lower = Math.floor(index);
+  const upper = Math.min(lower + 1, palette.length - 1);
+  const fraction = index - lower;
+  const [r1, g1, b1] = palette[lower];
+  const [r2, g2, b2] = palette[upper];
+  const r = Math.round(r1 + (r2 - r1) * fraction);
+  const g = Math.round(g1 + (g2 - g1) * fraction);
+  const b = Math.round(b1 + (b2 - b1) * fraction);
+  const finalAlpha = alpha * baseAlpha;
+  return `rgba(${r}, ${g}, ${b}, ${finalAlpha.toFixed(3)})`;
+}
+
 function buildHelixScene(floor, random) {
   const region = getSceneRegion(floor);
   const band = getSceneActivityBand(floor);
-  const clusterCount = clamp(Math.round(band.width / 78), 18, 28);
+  const isHero = floor.role === 'hero';
+  const isCompact = floor.visibleWidth < 720;
+  const focalCount = isCompact ? 1 : 2;
+  const clusterCount = isHero ? (isCompact ? 2 : 3) : clamp(Math.round(band.width / 110), 10, 16);
   const strandParticles = [];
 
   const clusters = Array.from({ length: clusterCount }, (_, index) => {
-    const horizontalBias = Math.pow(random(), 0.42);
+    const isFocal = isHero && index < focalCount;
+    const heroLanes = isCompact ? [0.82, 0.62] : [0.68, 0.84, 0.56];
+    const horizontalBias = isHero
+      ? clamp((heroLanes[index] ?? 0.72) + (random() - 0.5) * (isFocal ? 0.045 : 0.07), 0.56, 0.98)
+      : 0.15 + Math.pow(random(), 0.5) * 0.75;
+    const radiusBase = isHero
+      ? (isFocal ? clamp(floor.visibleWidth * 0.048, 38, 64) : 28 + random() * 14)
+      : 22 + random() * 12;
+    const focus = isHero ? (isFocal ? 1.85 : 0.68) : 0.58;
     const cluster = {
-      anchorX: band.startX + band.width * (0.02 + horizontalBias * 0.98),
-      anchorY: floor.visibleY + floor.visibleHeight * (0.46 + (random() - 0.5) * 0.12),
-      flowX: (random() - 0.5) * band.width * 0.22,
-      flowY: (random() - 0.5) * floor.visibleHeight * 0.12,
-      radius: 20 + random() * 16,
-      span: floor.visibleHeight * (1.44 + random() * 0.42),
-      turns: 3 + random() * 1.4,
-      rotation: -0.48 + random() * 0.96,
-      orbitX: 22 + random() * 28,
-      orbitY: 8 + random() * 14,
-      floatY: 4 + random() * 8,
-      crossDrift: 10 + random() * 16,
-      travelSpeed: pickSceneSpeed(random, 0.00012, 0.000018),
-      spin: pickSceneSpeed(random, 0.00009, 0.000014),
-      phase: random() * Math.PI * 2
+      anchorX: band.startX + band.width * horizontalBias,
+      anchorY:
+        floor.visibleY +
+        floor.visibleHeight *
+          (isHero ? 0.48 + (random() - 0.5) * (isFocal ? 0.08 : 0.16) : 0.48 + (random() - 0.5) * 0.14),
+      flowX: (random() - 0.5) * band.width * (isHero ? (isFocal ? 0.10 : 0.14) : 0.12),
+      flowY: (random() - 0.5) * floor.visibleHeight * (isHero ? 0.06 : 0.08),
+      radius: radiusBase * (0.92 + random() * 0.18),
+      span:
+        floor.visibleHeight *
+        (isHero ? (isFocal ? 1.02 + random() * 0.18 : 1.18 + random() * 0.20) : 1.12 + random() * 0.24),
+      turns: isHero ? (isFocal ? 4.2 + random() * 1.2 : 3.6 + random() * 1.0) : 3.4 + random() * 1.1,
+      rotation: isHero ? -0.25 + random() * 0.5 : -0.35 + random() * 0.7,
+      orbitX: isHero ? 8 + random() * 14 : 12 + random() * 18,
+      orbitY: isHero ? 4 + random() * 8 : 6 + random() * 10,
+      floatY: isHero ? 2 + random() * 5 : 3 + random() * 6,
+      crossDrift: isHero ? 4 + random() * 8 : 6 + random() * 10,
+      travelSpeed: pickSceneSpeed(random, isHero ? 0.000082 : 0.00009, isHero ? 0.000012 : 0.000014),
+      spin: pickSceneSpeed(random, isHero ? 0.000068 : 0.000075, isHero ? 0.000010 : 0.000012),
+      phase: random() * Math.PI * 2,
+      focus,
+      steps: isHero ? (isFocal ? 52 : 44) : 42,
+      rungStep: isHero ? (isFocal ? 3 : 4) : 4,
+      nodeSize: isHero ? (isFocal ? 2.0 : 1.25) : 1.05,
+      strandWidth: isHero ? (isFocal ? 1.75 : 1.10) : 1.0,
+      interactionRadius: isHero ? (isFocal ? 260 : 200) : 175,
+      pulseSpeed: pickSceneSpeed(random, isHero ? 0.00010 : 0.000085, 0.000014)
     };
 
-    const particlesPerStrand = 10 + Math.floor(random() * 6);
+    const particlesPerStrand = isHero
+      ? (isFocal ? 24 + Math.floor(random() * 10) : 12 + Math.floor(random() * 6))
+      : 10 + Math.floor(random() * 6);
     for (let strand = 0; strand < 2; strand += 1) {
       for (let particleIndex = 0; particleIndex < particlesPerStrand; particleIndex += 1) {
+        const speedMultiplier = isHero ? (isFocal ? 1.45 : 1.25) : 1.15;
         strandParticles.push({
           clusterIndex: index,
           strandPhase: strand * Math.PI,
           progress: random(),
-          speed: pickSceneSpeed(random, 0.00013, 0.000018),
+          speed: pickSceneSpeed(random, 0.00012, 0.000016) * speedMultiplier,
           phase: random() * Math.PI * 2,
-          size: 1.2 + random() * 1.8,
+          size: isHero ? 1.45 + random() * (isFocal ? 1.9 : 1.15) : 1.1 + random() * 1.2,
+          focus,
           color: pickSceneColor(random, 0.58, 0.16),
           trailColor: pickSceneColor(random, 0.16, 0.08)
         });
@@ -892,19 +1039,19 @@ function buildHelixScene(floor, random) {
   floor.sceneData = {
     clusters,
     strandParticles,
-    ambient: buildAmbientParticles(floor, random, 220, {
+    ambient: buildAmbientParticles(floor, random, 160, {
       minXRatio: 0,
       maxXRatio: 1,
-      minDriftX: 16,
-      maxDriftX: 36,
+      minDriftX: 17,
+      maxDriftX: 40,
       minDriftY: 12,
-      maxDriftY: 26,
-      speedCenter: 0.0002,
+      maxDriftY: 27,
+      speedCenter: 0.000175,
       speedSpread: 0.00004,
-      flowScaleX: 2.1,
-      flowScaleY: 1.8,
-      minSize: 0.9,
-      maxSize: 2.8
+      flowScaleX: 2.2,
+      flowScaleY: 1.6,
+      minSize: 0.72,
+      maxSize: 2.45
     })
   };
 }
@@ -912,40 +1059,157 @@ function buildHelixScene(floor, random) {
 function drawHelixScene(floor, time) {
   const { ctx, sceneData } = floor;
   const region = getSceneRegion(floor);
+  const band = getSceneActivityBand(floor);
+  const isHero = floor.role === 'hero';
   const clusterStates = sceneData.clusters.map((cluster) => getHelixClusterState(cluster, time, floor));
   const ambientParticles = projectAmbientParticles(sceneData.ambient, time);
+  const pointerGlow = floor.pointer?.intensity || 0;
+  const previousLineCap = ctx.lineCap;
+  const previousLineJoin = ctx.lineJoin;
 
-  drawGlow(ctx, getSceneActivityBand(floor).centerX, region.centerY, Math.min(region.width * 0.18, 190), [
-    [0, 'rgba(237, 147, 102, 0.08)'],
-    [0.45, 'rgba(29, 107, 108, 0.04)'],
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  drawGlow(ctx, band.centerX + floor.visibleWidth * 0.12, region.centerY, Math.min(region.width * 0.18, 210), [
+    [0, `rgba(237, 147, 102, ${0.09 + pointerGlow * 0.03})`],
+    [0.45, `rgba(29, 107, 108, ${0.045 + pointerGlow * 0.018})`],
     [1, 'rgba(255, 255, 255, 0)']
   ]);
+
+  drawParticleSwarm(ctx, ambientParticles, {
+    connectDistance: 0,
+    trailScale: 0.11,
+    trailWidthFactor: 0.42
+  });
 
   sceneData.clusters.forEach((cluster, clusterIndex) => {
     const state = clusterStates[clusterIndex];
     const front = [];
     const back = [];
+    const focus = state.focus || cluster.focus || 1;
+    const steps = cluster.steps || 32;
+    const rungStep = cluster.rungStep || 4;
+    const pulseCenter = (time * (cluster.pulseSpeed || 0.00008) + cluster.phase / (Math.PI * 2)) % 1;
+    const depthOffset = (state.focus - 0.5) * 3;
+    const parallaxX = Math.sin(time * 0.00008 + clusterIndex) * depthOffset;
+    const parallaxY = Math.cos(time * 0.00006 + clusterIndex * 0.7) * depthOffset * 0.5;
 
-    for (let index = 0; index <= 32; index += 1) {
-      const progress = index / 32;
+    for (let index = 0; index <= steps; index += 1) {
+      const progress = index / steps;
       const frontPoint = projectHelixPoint(cluster, state, progress, 0, time, cluster.phase);
       const backPoint = projectHelixPoint(cluster, state, progress, Math.PI, time, cluster.phase + 1.2);
-      front.push(frontPoint);
-      back.push(backPoint);
+      const frontParallax = {
+        x: frontPoint.x + parallaxX,
+        y: frontPoint.y + parallaxY,
+        twist: frontPoint.twist
+      };
+      const backParallax = {
+        x: backPoint.x - parallaxX * 0.6,
+        y: backPoint.y - parallaxY * 0.6,
+        twist: backPoint.twist
+      };
+      const unwindWave = state.unwindFactor ? Math.sin(progress * Math.PI) * state.unwindFactor : 0;
+      const frontUnwound = {
+        x: frontParallax.x + (frontParallax.x - state.centerX) * unwindWave * 0.3,
+        y: frontParallax.y,
+        twist: frontParallax.twist
+      };
+      const backUnwound = {
+        x: backParallax.x + (backParallax.x - state.centerX) * unwindWave * 0.3,
+        y: backParallax.y,
+        twist: backParallax.twist
+      };
+      front.push(frontUnwound);
+      back.push(backUnwound);
 
-      if (index % 4 === 0 && index > 0 && index < 32) {
+      if (index % rungStep === 0 && index > 0 && index < steps) {
+        const pulse = clamp(1 - getLoopDistance(progress, pulseCenter) / 0.09, 0, 1);
+        const rungAlpha = clamp(0.045 * focus + pulse * 0.14 * focus + unwindWave * 0.06, 0.022, 0.32);
+        const frontTwistNorm = (Math.cos(frontPoint.twist) + 1) * 0.5;
+        const rungColor = getHelixColorFromTwist(frontPoint.twist, rungAlpha);
+        if (focus > 0.4 && (pulse > 0.25 || unwindWave > 0.04)) {
+          ctx.shadowBlur = 5 + pulse * 10 * focus + unwindWave * 14;
+          ctx.shadowColor = getHelixColorFromTwist(frontPoint.twist, rungAlpha * 1.8);
+        }
         ctx.beginPath();
-        ctx.moveTo(frontPoint.x, frontPoint.y);
-        ctx.lineTo(backPoint.x, backPoint.y);
-        ctx.strokeStyle = 'rgba(237, 147, 102, 0.038)';
-        ctx.lineWidth = 0.9;
+        ctx.moveTo(frontUnwound.x, frontUnwound.y);
+        ctx.lineTo(backUnwound.x, backUnwound.y);
+        ctx.strokeStyle = rungColor;
+        ctx.lineWidth = 0.9 + pulse * 0.9 * focus + state.interaction * 0.6 + unwindWave * 0.5;
         ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        if (focus > 0.5 && index % (rungStep * 2) === 0) {
+          const nodeAlpha = clamp(0.06 * focus + pulse * 0.14 * focus + state.interaction * 0.08 + unwindWave * 0.05, 0.04, 0.32);
+          const nodeSize = (cluster.nodeSize || 1.3) * (1 + pulse * 0.28 * focus + state.interaction * 0.2 + unwindWave * 0.15);
+          ctx.globalAlpha = nodeAlpha;
+          ctx.shadowBlur = 10 + pulse * 14 * focus + state.interaction * 10 + unwindWave * 18;
+          ctx.shadowColor = getHelixColorFromTwist(frontUnwound.twist, 0.6);
+          drawDot(ctx, frontUnwound.x, frontUnwound.y, nodeSize, getHelixColorFromTwist(frontUnwound.twist, 1));
+          ctx.shadowColor = getHelixColorFromTwist(backUnwound.twist, 0.6);
+          drawDot(ctx, backUnwound.x, backUnwound.y, nodeSize * 0.85, getHelixColorFromTwist(backUnwound.twist, 1));
+          ctx.shadowBlur = 0;
+          ctx.globalAlpha = 1;
+        }
       }
     }
 
-    drawPolyline(ctx, back, 'rgba(95, 131, 125, 0.048)', 1);
-    drawPolyline(ctx, front, 'rgba(29, 107, 108, 0.056)', 1.1);
+    const interactionAlpha = state.interaction * 0.055 * focus;
+    const backAlpha = clamp(0.042 * focus + interactionAlpha, 0.022, 0.16);
+    const frontAlpha = clamp(0.058 * focus + interactionAlpha, 0.028, 0.22);
+    const backBaseTwist = back.length > 0 ? back[Math.floor(back.length / 2)].twist : 0;
+    const frontBaseTwist = front.length > 0 ? front[Math.floor(front.length / 2)].twist : 0;
+    const backColor = getHelixColorFromTwist(backBaseTwist, backAlpha);
+    const frontColor = getHelixColorFromTwist(frontBaseTwist, frontAlpha);
+    if (focus > 0.45) {
+      ctx.shadowBlur = 6 + state.interaction * 12 * focus;
+      ctx.shadowColor = getHelixColorFromTwist(backBaseTwist, backAlpha * 1.8);
+      drawPolyline(ctx, back, backColor, (cluster.strandWidth || 1) * 0.9);
+      ctx.shadowColor = getHelixColorFromTwist(frontBaseTwist, frontAlpha * 2);
+      drawPolyline(ctx, front, frontColor, cluster.strandWidth || 1.05);
+      ctx.shadowBlur = 0;
+    } else {
+      drawPolyline(ctx, back, backColor, (cluster.strandWidth || 1) * 0.9);
+      drawPolyline(ctx, front, frontColor, cluster.strandWidth || 1.05);
+    }
   });
+
+  sceneData.clusters.forEach((cluster, clusterIndex) => {
+    const state = clusterStates[clusterIndex];
+    const focus = state.focus || cluster.focus || 1;
+    const steps = cluster.steps || 42;
+    const rungStep = cluster.rungStep || 4;
+    const pulseCenter = (time * (cluster.pulseSpeed || 0.000085) + cluster.phase / (Math.PI * 2)) % 1;
+
+    for (let index = 0; index <= steps; index += 1) {
+      if (index % rungStep !== 0 || index === 0 || index === steps) {
+        continue;
+      }
+      const progress = index / steps;
+      const pulse = clamp(1 - getLoopDistance(progress, pulseCenter) / 0.09, 0, 1);
+      if (pulse < 0.35 || focus < 0.35) {
+        continue;
+      }
+      const frontPoint = projectHelixPoint(cluster, state, progress, 0, time, cluster.phase);
+      const backPoint = projectHelixPoint(cluster, state, progress, Math.PI, time, cluster.phase + 1.2);
+      const midX = (frontPoint.x + backPoint.x) * 0.5;
+      const midY = (frontPoint.y + backPoint.y) * 0.5;
+      const sparkleCount = Math.floor(pulse * 3.5 * focus) + 1;
+      for (let s = 0; s < sparkleCount; s += 1) {
+        const angle = (s / sparkleCount) * Math.PI * 2 + time * 0.0009 + cluster.phase;
+        const radius = 2.5 + pulse * 6 * focus;
+        const sx = midX + Math.cos(angle) * radius;
+        const sy = midY + Math.sin(angle) * radius;
+        const sparkleAlpha = pulse * 0.22 * focus * (1 - s / Math.max(sparkleCount, 1));
+        ctx.globalAlpha = sparkleAlpha;
+        ctx.shadowBlur = 3 + pulse * 6 * focus;
+        ctx.shadowColor = getHelixColorFromTwist(frontPoint.twist, 0.45);
+        drawDot(ctx, sx, sy, 1 + pulse * 1.1 * focus, getHelixColorFromTwist(frontPoint.twist + s, 1));
+      }
+    }
+  });
+  ctx.shadowBlur = 0;
+  ctx.globalAlpha = 1;
 
   const strandParticles = sceneData.strandParticles.map((particle) => {
     const cluster = sceneData.clusters[particle.clusterIndex];
@@ -959,39 +1223,44 @@ function drawHelixScene(floor, time) {
       time,
       particle.phase
     );
-    const x = point.x + Math.cos(point.twist * 1.6 + particle.phase) * 3;
-    const y = point.y + Math.sin(time * particle.speed * 1.2 + particle.phase) * 4;
+    const flowOffset = Math.sin(time * particle.speed * 2.4 + particle.phase) * 2;
+    const x = point.x + Math.cos(point.twist * 1.6 + particle.phase) * 3 + flowOffset;
+    const y = point.y + Math.sin(time * particle.speed * 1.2 + particle.phase) * 4 + flowOffset * 0.6;
     const near = (Math.cos(point.twist) + 1) * 0.5;
     const depth = 0.72 + near * 0.92;
+    const focus = particle.focus || 1;
+    const interaction = state.interaction || 0;
+    const flowColor = getHelixColorFromTwist(point.twist, 0.62 + near * 0.18);
+    const flowTrail = getHelixColorFromTwist(point.twist + Math.PI, 0.18 + near * 0.08);
 
     return {
       x,
       y,
-      vx: Math.sin(point.twist) * state.radiusX * 0.18,
-      vy: Math.cos(point.twist) * state.radiusY * 0.14,
-      size: particle.size * (0.88 + near * 0.42),
+      vx: Math.sin(point.twist) * state.radiusX * 0.18 + flowOffset * 0.3,
+      vy: Math.cos(point.twist) * state.radiusY * 0.14 + flowOffset * 0.2,
+      size: particle.size * (0.88 + near * 0.42) * (1 + interaction * 0.22),
       depth,
-      opacity: 0.42 + near * 0.48,
-      glowAlpha: 0.1 + near * 0.08,
-      color: particle.color,
-      trailColor: particle.trailColor
+      opacity: (0.34 + near * 0.42) * focus + interaction * 0.14,
+      glowAlpha: 0.08 + near * 0.08 + interaction * 0.08,
+      color: flowColor,
+      trailColor: flowTrail
     };
   });
 
   drawParticleSwarm(ctx, strandParticles, {
-    connectDistance: 62,
-    connectOpacity: 0.03,
-    trailScale: 0.14
+    connectDistance: 68,
+    connectOpacity: 0.032,
+    trailScale: 0.24,
+    trailWidthFactor: 0.65
   });
   drawParticleBursts(ctx, ambientParticles, {
     threshold: 14,
-    burstRadius: 4.6,
-    maxBursts: 42
+    burstRadius: 4.5,
+    maxBursts: 26
   });
-  drawParticleSwarm(ctx, ambientParticles, {
-    connectDistance: 0,
-    trailScale: 0.14
-  });
+
+  ctx.lineCap = previousLineCap;
+  ctx.lineJoin = previousLineJoin;
 }
 
 function buildLatticeScene(floor, random) {
@@ -1738,6 +2007,15 @@ function destroyInspirationBackgrounds() {
     window.removeEventListener('resize', inspirationBackgroundState.handleResize);
   }
 
+  if (inspirationBackgroundState.handlePointerMove) {
+    window.removeEventListener('pointermove', inspirationBackgroundState.handlePointerMove);
+  }
+
+  if (inspirationBackgroundState.handlePointerLeave) {
+    window.removeEventListener('pointerleave', inspirationBackgroundState.handlePointerLeave);
+    window.removeEventListener('blur', inspirationBackgroundState.handlePointerLeave);
+  }
+
   for (const floor of inspirationBackgroundState.floors) {
     floor.visual.remove();
     floor.element.classList.remove('has-inspiration-floor-visual');
@@ -1787,6 +2065,7 @@ function initializeInspirationBackgrounds() {
         canvas,
         veil,
         ctx,
+        pointer: null,
         seed: hashString(`${pageId}:${role}:${floorIndex}:${sceneName}:${INSPIRATION_RUN_SALT}`)
       };
     })
@@ -1801,8 +2080,27 @@ function initializeInspirationBackgrounds() {
   }
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pointerState = {
+    active: false,
+    clientX: 0,
+    clientY: 0
+  };
+  const handlePointerMove = (event) => {
+    pointerState.active = true;
+    pointerState.clientX = event.clientX;
+    pointerState.clientY = event.clientY;
+  };
+  const handlePointerLeave = () => {
+    pointerState.active = false;
+  };
+
+  window.addEventListener('pointermove', handlePointerMove, { passive: true });
+  window.addEventListener('pointerleave', handlePointerLeave);
+  window.addEventListener('blur', handlePointerLeave);
+
   const renderFrame = (now) => {
     for (const floor of floors) {
+      updateInspirationPointerForFloor(floor, pointerState);
       floor.ctx.clearRect(0, 0, floor.canvasLogicalWidth, floor.canvasLogicalHeight);
       floor.scene.draw(floor, now);
     }
@@ -1841,7 +2139,9 @@ function initializeInspirationBackgrounds() {
     floors,
     frameId: null,
     resizeObserver,
-    handleResize
+    handleResize,
+    handlePointerMove,
+    handlePointerLeave
   };
 
   renderFrame(window.performance.now());

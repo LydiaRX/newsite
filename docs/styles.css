@@ -2094,7 +2094,7 @@ html[data-theme="inspiration"] .header-shell::after {
 
 html[data-theme="inspiration"] .brand,
 html[data-theme="inspiration"] .brand-copy strong {
-  color: var(--text-strong);
+  color: var(--logo-primary);
 }
 
 html[data-theme="inspiration"] .brand {
@@ -2106,7 +2106,7 @@ html[data-theme="inspiration"] .brand-logo {
 }
 
 html[data-theme="inspiration"] .brand-copy small {
-  color: var(--muted);
+  color: var(--logo-primary);
 }
 
 html[data-theme="inspiration"] .site-nav {
@@ -2121,7 +2121,7 @@ html[data-theme="inspiration"] .site-nav .nav-cta {
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: var(--muted-strong);
+  color: var(--logo-primary);
   box-shadow: none;
 }
 
@@ -2133,16 +2133,16 @@ html[data-theme="inspiration"] .nav-link[aria-current="page"],
 html[data-theme="inspiration"] .nav-link--toggle.is-active,
 html[data-theme="inspiration"] .nav-group.is-active > .nav-link--toggle,
 html[data-theme="inspiration"] .nav-group[open] > .nav-link--toggle {
-  color: var(--text-strong);
-  box-shadow: inset 0 -2px 0 var(--logo-accent);
+  color: var(--logo-primary);
+  box-shadow: inset 0 -2px 0 currentColor;
 }
 
 html[data-theme="inspiration"] .site-nav .nav-cta:hover,
 html[data-theme="inspiration"] .site-nav .nav-cta:focus-visible {
-  color: var(--text-strong);
+  color: var(--logo-primary);
   background: transparent;
   border-color: transparent;
-  box-shadow: inset 0 -2px 0 var(--logo-accent);
+  box-shadow: inset 0 -2px 0 currentColor;
 }
 
 html[data-theme="inspiration"] .nav-dropdown {
@@ -2157,6 +2157,12 @@ html[data-theme="inspiration"] .nav-dropdown-link {
   border: 0;
   border-radius: 0;
   background: transparent;
+  color: var(--logo-primary);
+}
+
+html[data-theme="inspiration"] .nav-dropdown-link strong,
+html[data-theme="inspiration"] .nav-dropdown-link span {
+  color: var(--logo-primary);
 }
 
 html[data-theme="inspiration"] .page-shell {
@@ -2312,6 +2318,13 @@ html[data-theme="inspiration"] .inspiration-floor-visual__veil {
 
 html[data-theme="inspiration"] .inspiration-floor-visual__base {
   z-index: 0;
+  background:
+    radial-gradient(circle at 88% 48%, rgba(237, 147, 102, 0.08), transparent 34%),
+    radial-gradient(circle at 78% 56%, rgba(29, 107, 108, 0.06), transparent 38%),
+    linear-gradient(180deg, #ffffff 0%, #fbfcfb 100%);
+}
+
+html[data-theme="inspiration"] .inspiration-floor-visual[data-role="white"] .inspiration-floor-visual__base {
   background: linear-gradient(180deg, #ffffff 0%, #fbfcfb 100%);
 }
 
@@ -2324,11 +2337,11 @@ html[data-theme="inspiration"] .inspiration-floor-visual__veil {
   background:
     linear-gradient(
       90deg,
-      rgba(255, 255, 255, 0.985) 0%,
-      rgba(255, 255, 255, 0.975) 24%,
-      rgba(255, 255, 255, 0.93) 42%,
-      rgba(255, 255, 255, 0.74) 62%,
-      rgba(255, 255, 255, 0.26) 84%,
+      rgba(255, 255, 255, 0.995) 0%,
+      rgba(255, 255, 255, 0.99) 34%,
+      rgba(255, 255, 255, 0.955) 50%,
+      rgba(255, 255, 255, 0.72) 66%,
+      rgba(255, 255, 255, 0.2) 86%,
       rgba(255, 255, 255, 0) 100%
     ),
     linear-gradient(
@@ -2339,11 +2352,34 @@ html[data-theme="inspiration"] .inspiration-floor-visual__veil {
     );
 }
 
+html[data-theme="inspiration"] .inspiration-floor-visual[data-role="hero"] .inspiration-floor-visual__veil {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.998) 0%,
+      rgba(255, 255, 255, 0.995) 32%,
+      rgba(255, 255, 255, 0.96) 48%,
+      rgba(255, 255, 255, 0.45) 68%,
+      rgba(255, 255, 255, 0.08) 88%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(255, 255, 255, 0.07) 24%,
+      rgba(255, 255, 255, 0) 100%
+    );
+}
+
 html[data-theme="inspiration"] .inspiration-floor-canvas {
   position: absolute;
   z-index: 1;
   display: block;
-  opacity: 0.9;
+  opacity: 0.97;
+}
+
+html[data-theme="inspiration"] .inspiration-floor-visual[data-role="white"] .inspiration-floor-canvas {
+  opacity: 0.82;
 }
 
 html[data-theme="inspiration"] .hero .eyebrow,
@@ -2354,7 +2390,7 @@ html[data-theme="inspiration"] .page-shell > .section .kicker {
 }
 
 html[data-theme="inspiration"] .hero-subtitle {
-  color: var(--muted-strong);
+  color: var(--logo-primary);
 }
 
 html[data-theme="inspiration"] .hero-text,
@@ -2450,9 +2486,12 @@ html[data-theme="inspiration"] .spotlight-dialog__icon {
 
 html[data-theme="inspiration"] .hero-card strong,
 html[data-theme="inspiration"] .metric strong {
-  color: var(--text-strong);
+  color: var(--logo-primary);
 }
 
+html[data-theme="inspiration"] h1,
+html[data-theme="inspiration"] h2,
+html[data-theme="inspiration"] h3,
 html[data-theme="inspiration"] .hero-card h2,
 html[data-theme="inspiration"] .content-panel h2,
 html[data-theme="inspiration"] .contact-card h2,
@@ -2469,7 +2508,7 @@ html[data-theme="inspiration"] .team-card h3,
 html[data-theme="inspiration"] .profile-card h3,
 html[data-theme="inspiration"] .resource-card h3,
 html[data-theme="inspiration"] .metric h3 {
-  color: var(--text-strong);
+  color: var(--logo-primary);
 }
 
 html[data-theme="inspiration"] .hero-card p,
@@ -2561,6 +2600,7 @@ html[data-theme="inspiration"] .storage-banner {
 html[data-theme="inspiration"] .button.primary {
   background: linear-gradient(135deg, #1d6b6c 0%, #2c8880 100%);
   border-color: transparent;
+  color: #ffffff;
   box-shadow: none;
 }
 
@@ -2584,7 +2624,18 @@ html[data-theme="inspiration"] .page-hero .button.secondary:hover,
 html[data-theme="inspiration"] .page-shell > .section .button.secondary:hover {
   background: rgba(29, 107, 108, 0.06);
   border-color: rgba(29, 107, 108, 0.42);
-  color: var(--text-strong);
+  color: var(--logo-primary);
+}
+
+html[data-theme="inspiration"] .theme-widget__choice,
+html[data-theme="inspiration"] .theme-widget__disable,
+html[data-theme="inspiration"] .storage-banner__button {
+  color: var(--logo-primary);
+}
+
+html[data-theme="inspiration"] .theme-widget__choice[aria-pressed="true"],
+html[data-theme="inspiration"] .storage-banner__button--primary {
+  color: #ffffff;
 }
 
 html[data-theme="inspiration"] .site-footer {
@@ -2594,7 +2645,7 @@ html[data-theme="inspiration"] .site-footer {
 }
 
 html[data-theme="inspiration"] .site-footer h2 {
-  color: var(--text-strong);
+  color: var(--logo-primary);
 }
 
 html[data-theme="inspiration"] .site-footer p,
@@ -2828,22 +2879,45 @@ html[data-theme="inspiration"] .footer-link {
     background:
       linear-gradient(
         180deg,
-        rgba(255, 255, 255, 0.22) 0%,
-        rgba(255, 255, 255, 0.08) 28%,
+        rgba(255, 255, 255, 0.28) 0%,
+        rgba(255, 255, 255, 0.1) 28%,
         rgba(255, 255, 255, 0) 100%
       ),
       linear-gradient(
         90deg,
-        rgba(255, 255, 255, 0.985) 0%,
-        rgba(255, 255, 255, 0.975) 34%,
-        rgba(255, 255, 255, 0.92) 52%,
-        rgba(255, 255, 255, 0.34) 80%,
+        rgba(255, 255, 255, 0.998) 0%,
+        rgba(255, 255, 255, 0.992) 42%,
+        rgba(255, 255, 255, 0.94) 62%,
+        rgba(255, 255, 255, 0.38) 84%,
+        rgba(255, 255, 255, 0) 100%
+      );
+  }
+
+  html[data-theme="inspiration"] .inspiration-floor-visual[data-role="hero"] .inspiration-floor-visual__veil,
+  html[data-theme="inspiration"] .inspiration-floor-visual[data-role="white"] .inspiration-floor-visual__veil {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.28) 0%,
+        rgba(255, 255, 255, 0.1) 28%,
+        rgba(255, 255, 255, 0) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.998) 0%,
+        rgba(255, 255, 255, 0.992) 46%,
+        rgba(255, 255, 255, 0.94) 64%,
+        rgba(255, 255, 255, 0.38) 84%,
         rgba(255, 255, 255, 0) 100%
       );
   }
 
   html[data-theme="inspiration"] .inspiration-floor-canvas {
-    opacity: 0.8;
+    opacity: 0.84;
+  }
+
+  html[data-theme="inspiration"] .inspiration-floor-visual[data-role="white"] .inspiration-floor-canvas {
+    opacity: 0.72;
   }
 
   html[data-theme="inspiration"] .nav-link,
@@ -2852,7 +2926,7 @@ html[data-theme="inspiration"] .footer-link {
   html[data-theme="inspiration"] .nav-dropdown {
     background: transparent;
     border-color: transparent;
-    color: var(--muted-strong);
+    color: var(--logo-primary);
   }
 
   html[data-theme="inspiration"] .nav-dropdown {
