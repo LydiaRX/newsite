@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neuro-symbolic genomics - LydiaRX AG</title>
+    <meta
+      name="description"
+      content="A LydiaRX position paper on neuro-symbolic genomics and why foundation models need symbolic, mechanistic, and causal layers to support higher-value discovery."
+    />
+    <script>
+      (() => {
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
+        const params = new URLSearchParams(window.location.search);
+        const requestedTheme = params.get('theme');
+        let theme = DEFAULT_THEME;
+
+        try {
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
+          }
+        } catch (error) {
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
+        }
+
+        document.documentElement.dataset.theme = theme;
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: window.__mermaidTheme || 'neutral' });
+    </script>
+    <script type="module" src="partials-loader.js"></script>
+  </head>
+  <body data-page="research">
+    <div data-include="partials/site-header.html"></div>
+    <main class="page-shell">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a> / <a href="research.html">Research</a> / Neuro-symbolic genomics
+      </nav>
+
+      <section class="page-hero">
+        <p class="eyebrow">Research article</p>
+        <h1>Neuro-symbolic genomics</h1>
+        <p class="hero-subtitle">
+          Foundation models can capture genomic regularities, but high-value genomic AI will also
+          need symbolic constraints, causal reasoning, and mechanistic structure.
+        </p>
+        <p class="hero-text">
+          Purely neural genomics is powerful for pattern recognition, yet many biomedical questions
+          demand more than correlation. LydiaRX's neuro-symbolic genomics thesis argues that the
+          next layer of value will come from systems that can connect foundation-model signals to
+          pathways, rules, causal structures, and auditable biological hypotheses.
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="content-panel article-layout">
+          <p>
+            Neuro-symbolic genomics starts from a simple observation: the most valuable questions in
+            genomics are not only about prediction, but about explanation, mechanism, and
+            intervention. Foundation models can learn sequence regularities and help with variant
+            effect estimation, yet discovery teams still need explicit links between variants, genes,
+            pathways, phenotypes, tissues, clinical context, and potential actions. That need for
+            structured biological meaning is where a purely neural stack becomes incomplete.
+          </p>
+          <p>
+            LydiaRX therefore treats neuro-symbolic genomics as an architectural direction rather
+            than as one narrow technique. Knowledge graphs, ontologies, causal models,
+            probabilistic reasoning, symbolic constraints, and orchestration layers can all play a
+            role alongside neural sequence models. The symbolic layer is valuable because it keeps
+            biological commitments visible. Instead of hiding crucial assumptions in latent space, it
+            can expose pathway relations, evidence dependencies, uncertainty, and rule-bound
+            decisions in forms that humans and systems can inspect.
+          </p>
+          <p>
+            That makes the thesis tightly connected to both
+            <a href="research-system2-governance.html">System 2 governance</a> and
+            <a href="research-omics-firewall-architecture.html">Omics Firewall</a>. Stronger
+            reasoning layers only matter if their execution can be governed, traced, and linked to
+            data assets with real scientific value. Likewise, governed data infrastructure becomes
+            strategically more interesting when it supports models that do more than generic pattern
+            extraction. The prize is not a flashier model; it is a more defensible route from data to
+            biological understanding.
+          </p>
+          <p>
+            In that sense, neuro-symbolic genomics is both a research thesis and a commercial filter
+            for LydiaRX. It points toward the types of systems that may justify long-term investment:
+            those that combine rich data access, explicit biological structure, and agentic
+            execution environments able to keep evidence and reasoning legible throughout the
+            workflow.
+          </p>
+          <h2>Bibliography</h2>
+          <ul class="article-reference-list">
+            <li><a href="https://arxiv.org/abs/2306.15794">Nguyen et al., “HyenaDNA: Long-Range Genomic Sequence Modeling at Single Nucleotide Resolution.”</a></li>
+            <li><a href="https://doi.org/10.1093/bioinformatics/btx275">Alshahrani et al., “Neuro-symbolic representation learning on biological knowledge graphs.”</a></li>
+            <li><a href="https://arxiv.org/abs/1805.10872">Manhaeve et al., “DeepProbLog: Neural Probabilistic Logic Programming.”</a></li>
+            <li><a href="https://doi.org/10.1109/JPROC.2022.3173573">Kleyko et al., “Vector Symbolic Architectures as a Computing Framework for Emerging Hardware.”</a></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <div data-include="partials/site-footer.html"></div>
+  </body>
+</html>

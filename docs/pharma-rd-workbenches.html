@@ -10,26 +10,43 @@
     />
     <script>
       (() => {
-        const storageKey = 'lydiarx-theme';
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
         const params = new URLSearchParams(window.location.search);
         const requestedTheme = params.get('theme');
-        let theme = 'default';
+        let theme = DEFAULT_THEME;
 
         try {
-          if (requestedTheme === 'fusion') {
-            localStorage.setItem(storageKey, 'fusion');
-            theme = 'fusion';
-          } else if (requestedTheme === 'default') {
-            localStorage.removeItem(storageKey);
-          } else if (localStorage.getItem(storageKey) === 'fusion') {
-            theme = 'fusion';
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
           }
         } catch (error) {
-          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
         }
 
         document.documentElement.dataset.theme = theme;
-        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+        // Must run before the Mermaid module below so diagrams use the correct palette on first paint.
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
       })();
     </script>
     <link rel="stylesheet" href="styles.css" />
@@ -55,99 +72,66 @@
       </section>
 
       <section class="section">
-        <div class="split-grid">
-          <div>
-            <h2>From fragmented data to better study decisions</h2>
-            <p class="section-intro">
-              LydiaRX Pharma R&amp;D Workbenches help biotech and pharma teams transform existing data
-              into better hypotheses, better study designs, and clearer evidence packages.
-            </p>
-            <p class="lead">
-              The approach is especially relevant where efficacy, tolerability, adherence, adverse
-              events, discontinuation, and patient heterogeneity interact. Instead of relying on a
-              single model, the workbench runs several analytical agents and compares their outputs.
-            </p>
-          </div>
-          <div class="diagram-panel">
-            <img class="diagram-image" src="assets/diagram-pharma-workbench.svg" alt="Diagram showing data, model agents, simulation, and study decisions inside the pharma workbench." />
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2>What the workbench does</h2>
-        <div class="card-grid">
-          <article class="card">
-            <h3>Data layer</h3>
-            <p>Builds versioned patient-visit datasets, data dictionaries, transformation logs, and missingness maps.</p>
-          </article>
-          <article class="card">
-            <h3>Model agents</h3>
-            <p>Runs independent statistical, pharmacometric, machine-learning, and simulation agents.</p>
-          </article>
-          <article class="card">
-            <h3>Synthetic challenge</h3>
-            <p>Generates artificial datasets with known mechanisms to test bias detection and robustness.</p>
-          </article>
-          <article class="card">
-            <h3>Simulation</h3>
-            <p>Tests candidate dose and titration policies under alternative assumptions.</p>
-          </article>
-          <article class="card">
-            <h3>Comparison</h3>
-            <p>Measures convergence, disagreement, calibration, sensitivity, and failure modes.</p>
-          </article>
-          <article class="card">
-            <h3>Reporting</h3>
-            <p>Produces reproducible reports, model cards, assumptions, warnings, and study-design proposals.</p>
-          </article>
-          <article class="card">
-            <h3>Governance</h3>
-            <p>Maintains provenance, code versions, audit logs, decision traces, and pre-specified analysis plans.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2>Example analytical agents</h2>
-        <div class="card-grid">
-          <article class="card">
-            <h3>Longitudinal efficacy agent</h3>
-            <p>Models weight, BMI, and related markers over time under different dose histories.</p>
-          </article>
-          <article class="card">
-            <h3>Safety and tolerability agent</h3>
-            <p>Models adverse-event occurrence, severity, persistence, recurrence, and discontinuation.</p>
-          </article>
-          <article class="card">
-            <h3>Dose-response agent</h3>
-            <p>Estimates relationships between dose level and benefit-risk outcomes.</p>
-          </article>
-          <article class="card">
-            <h3>Exposure-response agent</h3>
-            <p>Relates drug exposure to efficacy and adverse effects when PK or concentration data exist.</p>
-          </article>
-          <article class="card">
-            <h3>ML stratification agent</h3>
-            <p>Identifies patient profiles associated with response, non-response, intolerance, or dropout.</p>
-          </article>
-          <article class="card">
-            <h3>Titration-policy agent</h3>
-            <p>Simulates escalation, hold, dose reduction, restart, and stopping rules.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="callout">
-          <h2>From fragmented data to study-design evidence.</h2>
-          <p>
-            The workbench produces structured evidence for clinical and strategic decisions:
-            candidate dosing strategies, titration rules, expected efficacy, expected adverse-event
-            burden, dropout risk, subgroup behaviour, model disagreement, uncertainty, and
-            recommended next studies.
+        <article class="content-panel intro-panel">
+          <h2>From fragmented data to better study decisions</h2>
+          <p class="section-intro">
+            LydiaRX Pharma R&amp;D Workbenches help biotech and pharma teams transform existing data
+            into better hypotheses, better study designs, and clearer evidence packages.
           </p>
+          <p class="lead">
+            The approach is especially relevant where efficacy, tolerability, adherence, adverse
+            events, discontinuation, and patient heterogeneity interact. Instead of relying on a
+            single model, the workbench runs several analytical agents and compares their outputs.
+          </p>
+          <div class="signal-diagram" aria-label="Pharma workbench flow from data to study decisions">
+            <div class="signal-diagram__rail"></div>
+            <div class="signal-diagram__grid">
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></span>
+                <span class="signal-diagram__eyebrow">Data</span>
+                <strong class="signal-diagram__title">Versioned substrate</strong>
+                <p class="signal-diagram__summary">Patient-visit data, dictionaries, missingness maps, and transformation logs stay explicit.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19h14"/><path d="M7 17V8"/><path d="M12 17V5"/><path d="M17 17v-6"/></svg></span>
+                <span class="signal-diagram__eyebrow">Agents</span>
+                <strong class="signal-diagram__title">Analytical ensemble</strong>
+                <p class="signal-diagram__summary">Statistical, pharmacometric, machine-learning, and simulation agents run in parallel.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10"/><path d="M9 4v6l-3 5a3 3 0 0 0 2.6 5h6.8A3 3 0 0 0 18 15l-3-5V4"/></svg></span>
+                <span class="signal-diagram__eyebrow">Stress test</span>
+                <strong class="signal-diagram__title">Simulation and challenge</strong>
+                <p class="signal-diagram__summary">Synthetic challenge datasets and dose-policy simulations expose robustness and disagreement.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 8v8l6 4 6-4V8z"/><path d="M9.5 12.5 11 14l4-4"/></svg></span>
+                <span class="signal-diagram__eyebrow">Decision</span>
+                <strong class="signal-diagram__title">Study evidence</strong>
+                <p class="signal-diagram__summary">Outputs become clearer next-step decisions about dose, titration, and study design.</p>
+              </article>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="section">
+        <h2>Six workbench spotlights</h2>
+        <div class="spotlight-grid">
+          <button class="spotlight-card" type="button" data-dialog-open="pharma-data-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></span><strong class="spotlight-card__title">Versioned data layer</strong><span class="spotlight-card__summary">Patient-visit datasets, dictionaries, missingness maps, and transformation logs.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="pharma-agents-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19h14"/><path d="M7 17V8"/><path d="M12 17V5"/><path d="M17 17v-6"/></svg></span><strong class="spotlight-card__title">Analytical agent ensemble</strong><span class="spotlight-card__summary">Independent statistical, pharmacometric, machine-learning, and simulation agents.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="pharma-safety-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 7v5c0 5 2.7 7.4 6 8 3.3-.6 6-3 6-8V7z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg></span><strong class="spotlight-card__title">Safety and tolerability</strong><span class="spotlight-card__summary">Adverse events, dropout risk, persistence, and benefit-risk tension stay visible.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="pharma-dose-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10"/><path d="M9 4v6l-3 5a3 3 0 0 0 2.6 5h6.8A3 3 0 0 0 18 15l-3-5V4"/></svg></span><strong class="spotlight-card__title">Dose and titration simulation</strong><span class="spotlight-card__summary">Candidate escalation, hold, reduction, restart, and stopping policies are stress-tested.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="pharma-stratification-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h7v12H4z"/><path d="M13 6h7v5h-7z"/><path d="M13 13h7v5h-7z"/></svg></span><strong class="spotlight-card__title">Stratification and comparison</strong><span class="spotlight-card__summary">Subgroup behaviour, disagreement, calibration, sensitivity, and failure modes are compared.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="pharma-reporting-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3h6l4 4v14H8z"/><path d="M14 3v5h5"/><path d="M10 13h6M10 17h6"/></svg></span><strong class="spotlight-card__title">Reporting and governance</strong><span class="spotlight-card__summary">Structured outputs become study-design evidence rather than disconnected model results.</span></button>
         </div>
+
+        <dialog class="spotlight-dialog" id="pharma-data-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Data</span><h3 class="spotlight-dialog__title">Versioned data layer</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>The workbench begins with disciplined data handling: patient-visit datasets, dictionaries, transformation logs, and missingness patterns remain explicit rather than hidden in analyst memory.</p><p>This is what allows downstream models and reports to stay reproducible and auditable.</p></div></article></dialog>
+        <dialog class="spotlight-dialog" id="pharma-agents-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19h14"/><path d="M7 17V8"/><path d="M12 17V5"/><path d="M17 17v-6"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Ensemble</span><h3 class="spotlight-dialog__title">Analytical agent ensemble</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>LydiaRX does not rely on one model path. Statistical, pharmacometric, machine-learning, and simulation agents can all interrogate the same problem from different angles.</p><p>That diversity is valuable because disagreement often reveals more than a smooth single-model answer.</p></div></article></dialog>
+        <dialog class="spotlight-dialog" id="pharma-safety-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 7v5c0 5 2.7 7.4 6 8 3.3-.6 6-3 6-8V7z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Risk</span><h3 class="spotlight-dialog__title">Safety and tolerability</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Safety and tolerability are central because dose strategy can fail even when efficacy signal exists. The workbench keeps adverse-event burden, discontinuation, persistence, and adherence visible alongside benefit.</p><p>This is crucial in next-generation metabolic and other complex therapeutic contexts.</p></div></article></dialog>
+        <dialog class="spotlight-dialog" id="pharma-dose-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10"/><path d="M9 4v6l-3 5a3 3 0 0 0 2.6 5h6.8A3 3 0 0 0 18 15l-3-5V4"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Simulation</span><h3 class="spotlight-dialog__title">Dose and titration simulation</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Candidate dose and titration policies can be explored before scarce clinical resources are committed. Escalation, hold, reduction, restart, and stopping rules become explicit objects for comparison.</p><p>The aim is not to claim certainty, but to increase the quality of the next decision.</p></div></article></dialog>
+        <dialog class="spotlight-dialog" id="pharma-stratification-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h7v12H4z"/><path d="M13 6h7v5h-7z"/><path d="M13 13h7v5h-7z"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Comparison</span><h3 class="spotlight-dialog__title">Stratification and comparison</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>The workbench tracks subgroup behaviour, convergence, disagreement, calibration, and sensitivity. This is where ML stratification, exposure-response reasoning, and traditional models can be compared rather than blindly stacked.</p><p>Such comparisons are often where the most actionable insight appears.</p></div></article></dialog>
+        <dialog class="spotlight-dialog" id="pharma-reporting-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3h6l4 4v14H8z"/><path d="M14 3v5h5"/><path d="M10 13h6M10 17h6"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Evidence</span><h3 class="spotlight-dialog__title">Reporting and governance</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>The workbench produces reports, model cards, assumptions, warnings, and study-design proposals with provenance and decision traces attached. That matters because the output is meant to guide next-stage scientific and strategic choices.</p><p>In short, the workbench is built to produce usable evidence, not only model output.</p></div></article></dialog>
       </section>
 
       <section class="section">

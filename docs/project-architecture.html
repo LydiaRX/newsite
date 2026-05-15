@@ -10,26 +10,43 @@
     />
     <script>
       (() => {
-        const storageKey = 'lydiarx-theme';
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
         const params = new URLSearchParams(window.location.search);
         const requestedTheme = params.get('theme');
-        let theme = 'default';
+        let theme = DEFAULT_THEME;
 
         try {
-          if (requestedTheme === 'fusion') {
-            localStorage.setItem(storageKey, 'fusion');
-            theme = 'fusion';
-          } else if (requestedTheme === 'default') {
-            localStorage.removeItem(storageKey);
-          } else if (localStorage.getItem(storageKey) === 'fusion') {
-            theme = 'fusion';
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
           }
         } catch (error) {
-          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
         }
 
         document.documentElement.dataset.theme = theme;
-        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+        // Must run before the Mermaid module below so diagrams use the correct palette on first paint.
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
       })();
     </script>
     <link rel="stylesheet" href="styles.css" />
@@ -59,13 +76,19 @@
             <h2>Repository structure</h2>
             <p class="section-intro">
               The repository publishes its output from `docs/`. Public pages, technical pages,
-              shared CSS, partials, assets, and the DS set all live under that root so the result
-              stays deployable without a separate build system.
+              shared CSS, partials, assets, the DS set, and linked research article pages all live
+              under that root so the result stays deployable without a separate build system.
             </p>
             <p class="lead">
-              The same output also supports an opt-in visual review mode for design exploration.
-              Appending <code>?theme=fusion</code> activates the alternate presentation and
-              <code>?theme=default</code> clears it without changing the underlying page structure.
+              The same output also supports a visual review mode for design exploration. The corner
+              Dev Preview widget is visible by default unless a stored override disables it. Direct
+              <code>?theme=fusion</code>, <code>?theme=inspiration</code>, and
+              <code>?theme=default</code> links still work, and the shared client-side layer
+              presents a browser-storage consent banner for these persisted preferences. The
+              inspiration review theme now uses one shared helix-style point-field engine across
+              its selected white floors, with page, floor, and refresh-level randomisation so
+              every band regenerates a different clustered starting state without changing
+              animation families.
             </p>
             <ul class="mono-list">
               <li><code>docs/*.html</code> — public routes and technical documentation pages.</li>

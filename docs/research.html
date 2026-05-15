@@ -3,33 +3,50 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Research &amp; Evidence — LydiaRX AG</title>
+    <title>Research — LydiaRX AG</title>
     <meta
       name="description"
-      content="LydiaRX publishes research notes, technical white papers, case studies, evidence packages, and public materials on genomic AI, regulated agentic AI, secure data collaboration, and automated R&amp;D."
+      content="LydiaRX publishes research notes and public articles on structured scientific automation, regulated agentic AI, genomic infrastructure, neuro-symbolic genomics, and automated R&amp;D."
     />
     <script>
       (() => {
-        const storageKey = 'lydiarx-theme';
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
         const params = new URLSearchParams(window.location.search);
         const requestedTheme = params.get('theme');
-        let theme = 'default';
+        let theme = DEFAULT_THEME;
 
         try {
-          if (requestedTheme === 'fusion') {
-            localStorage.setItem(storageKey, 'fusion');
-            theme = 'fusion';
-          } else if (requestedTheme === 'default') {
-            localStorage.removeItem(storageKey);
-          } else if (localStorage.getItem(storageKey) === 'fusion') {
-            theme = 'fusion';
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
           }
         } catch (error) {
-          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
         }
 
         document.documentElement.dataset.theme = theme;
-        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+        // Must run before the Mermaid module below so diagrams use the correct palette on first paint.
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
       })();
     </script>
     <link rel="stylesheet" href="styles.css" />
@@ -45,86 +62,87 @@
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a> / Research</nav>
 
       <section class="page-hero">
-        <p class="eyebrow">Public evidence layer</p>
-        <h1>Research &amp; Evidence</h1>
-        <p class="hero-subtitle">Research, evidence, and technical foundations.</p>
+        <p class="eyebrow">Research</p>
+        <h1>Research</h1>
+        <p class="hero-subtitle">Public research notes on AI infrastructure, genomics, and automated R&amp;D.</p>
         <p class="hero-text">
-          LydiaRX is research-led. The work is grounded in technical architecture, applied
-          validation, public research projects, industrial prototypes, and partner-facing evidence packages.
+          LydiaRX publishes concise position papers, architecture notes, and technical briefs that
+          explain how the venture studio approaches structured scientific automation, governed
+          genomic data, neuro-symbolic genomics, and model-informed R&amp;D work.
         </p>
       </section>
 
       <section class="section">
-        <div class="split-grid">
-          <div>
-            <h2>The public evidence layer for LydiaRX</h2>
-            <p class="section-intro">
-              This page is designed to become the public evidence layer for LydiaRX. It is the right
-              home for white papers, technical notes, case studies, public deliverables, diagrams,
-              preprints, and short explanations of the company’s architecture and venture directions.
-            </p>
-          </div>
-          <div class="diagram-panel">
-            <img class="diagram-image" src="assets/diagram-research-loop.svg" alt="Diagram showing LydiaRX moving from questions to evidence, dialogue, and renewed publication." />
-          </div>
-        </div>
+        <article class="content-panel intro-panel">
+          <h2>A compact public research library</h2>
+          <p class="section-intro">
+            The research hub is intentionally compact. Each article focuses on one thesis, keeps
+            the claims disclosure-safe, and links to the strongest related pieces elsewhere in the
+            LydiaRX research set.
+          </p>
+          <p class="lead">
+            The six articles below cover scientific automation, governance for AI-assisted
+            research, sovereign genomic infrastructure, neuro-symbolic genomics, dose and titration
+            modelling, and LydiaRX&rsquo;s genomic AI venture logic.
+          </p>
+        </article>
       </section>
 
       <section class="section">
-        <h2>What the evidence layer includes</h2>
-        <div class="card-grid">
-          <article class="card">
-            <h3>White papers</h3>
-            <p>Strategic documents that explain LydiaRX’s position on genomic AI, secure data collaboration, and venture formation.</p>
-          </article>
-          <article class="card">
-            <h3>Technical notes</h3>
-            <p>Short, focused pieces on AI Studio workflows, compute-to-data architecture, and model governance.</p>
-          </article>
-          <article class="card">
-            <h3>Case studies</h3>
-            <p>Disclosure-safe examples of partner work, industrial prototypes, and applied research outcomes.</p>
-          </article>
-          <article class="card">
-            <h3>Research programs</h3>
-            <p>Publicly discussable initiatives, collaborations, and technical outputs connected to active research work.</p>
-          </article>
-          <article class="card">
-            <h3>Evidence packages</h3>
-            <p>Demonstrations, validation summaries, execution traces, and architecture-backed partner materials.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2>Initial items to publish</h2>
-        <div class="card-grid">
-          <article class="card">
-            <h3>LydiaRX Strategic Thesis</h3>
-            <p>Overview of genomic AI, LydiaRX AI Studio, Omics Firewall, and venture vehicle formation.</p>
-          </article>
-          <article class="card">
-            <h3>LydiaRX AI Studio Overview</h3>
-            <p>Short technical and commercial explanation of the enterprise agentic AI platform.</p>
-          </article>
-          <article class="card">
-            <h3>Omics Firewall Concept Note</h3>
-            <p>Controlled-access infrastructure for sensitive omics and biomedical data.</p>
-          </article>
-          <article class="card">
-            <h3>Pharma R&amp;D Workbench Note</h3>
-            <p>Generalised description of multi-agent modelling workbenches for dose, titration, and clinical study design.</p>
-          </article>
-          <article class="card">
-            <h3>Genomic AI Venture Formation Note</h3>
-            <p>Explanation of how genomic data, AI models, pharma workspaces, and derivative IP become venture vehicles.</p>
-          </article>
+        <h2>Current articles</h2>
+        <div class="article-link-grid">
+          <a class="article-link-card" href="research-structured-science.html">
+            <span class="article-link-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19h14"/><path d="M7 17V8"/><path d="M12 17V5"/><path d="M17 17v-6"/></svg></span>
+            <span class="article-link-card__eyebrow">Scientific automation</span>
+            <strong class="article-link-card__title">Why structured scientific work is becoming automatable</strong>
+            <span class="article-link-card__summary">AI co-scientists, self-driving labs, and simulation-rich workflows are pushing science toward structured automation.</span>
+            <span class="article-link-card__meta">Open Article</span>
+          </a>
+          <a class="article-link-card" href="research-system2-governance.html">
+            <span class="article-link-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 7v5c0 5 2.7 7.4 6 8 3.3-.6 6-3 6-8V7z"/><path d="m9.5 12 1.5 1.5 3.5-3.5"/></svg></span>
+            <span class="article-link-card__eyebrow">AI governance</span>
+            <strong class="article-link-card__title">System 2 governance for AI-assisted research</strong>
+            <span class="article-link-card__summary">Why high-stakes research needs specifications, validation gates, traceability, and adversarial review.</span>
+            <span class="article-link-card__meta">Open Article</span>
+          </a>
+          <a class="article-link-card" href="research-omics-firewall-architecture.html">
+            <span class="article-link-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="m13 6 6 6-6 6"/><path d="M5 6v12"/></svg></span>
+            <span class="article-link-card__eyebrow">Genomic infrastructure</span>
+            <strong class="article-link-card__title">Omics Firewall and sovereign genomic infrastructure</strong>
+            <span class="article-link-card__summary">A hub-and-spoke model for governed custody, compute-to-data access, and controlled research workspaces.</span>
+            <span class="article-link-card__meta">Open Article</span>
+          </a>
+          <a class="article-link-card" href="research-neuro-symbolic-genomics.html">
+            <span class="article-link-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4c4 0 8 4 8 8s-4 8-8 8"/><path d="M8 4c-4 0-8 4-8 8s4 8 8 8"/><path d="M6 8h12M6 16h12"/></svg></span>
+            <span class="article-link-card__eyebrow">Genomic AI</span>
+            <strong class="article-link-card__title">Neuro-symbolic genomics</strong>
+            <span class="article-link-card__summary">Why genomic AI may need symbolic, causal, and mechanistic layers, not only neural prediction.</span>
+            <span class="article-link-card__meta">Open Article</span>
+          </a>
+          <a class="article-link-card" href="research-dose-titration-workbench.html">
+            <span class="article-link-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10"/><path d="M9 4v6l-3 5a3 3 0 0 0 2.6 5h6.8A3 3 0 0 0 18 15l-3-5V4"/></svg></span>
+            <span class="article-link-card__eyebrow">Model-informed R&amp;D</span>
+            <strong class="article-link-card__title">A multi-agent dose and titration workbench</strong>
+            <span class="article-link-card__summary">Independent analytical agents, simulation, and synthetic challenge testing for next-stage dose questions.</span>
+            <span class="article-link-card__meta">Open Article</span>
+          </a>
+          <a class="article-link-card" href="research-genomic-ai-venture-thesis.html">
+            <span class="article-link-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 8v8l6 4 6-4V8z"/><path d="M9 12h6"/></svg></span>
+            <span class="article-link-card__eyebrow">Venture formation</span>
+            <strong class="article-link-card__title">Genomic AI venture formation at LydiaRX</strong>
+            <span class="article-link-card__summary">How governed genomic data, Omics Firewall, AI Studio, and agentic infrastructure fit into one model.</span>
+            <span class="article-link-card__meta">Open Article</span>
+          </a>
         </div>
       </section>
 
       <section class="section">
         <div class="cta-band">
           <h2>Research partnerships and technical collaboration.</h2>
+          <p>
+            If one of these directions overlaps with your programme, LydiaRX can discuss the
+            relevant architecture, governance model, or R&amp;D workflow in more detail.
+          </p>
           <a class="button secondary" href="contact.html">Contact LydiaRX Research</a>
         </div>
       </section>

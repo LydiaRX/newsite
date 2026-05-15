@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System 2 governance for AI-assisted research - LydiaRX AG</title>
+    <meta
+      name="description"
+      content="A LydiaRX position paper on why high-stakes AI-assisted research needs explicit governance, deterministic validation, and durable traceability."
+    />
+    <script>
+      (() => {
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
+        const params = new URLSearchParams(window.location.search);
+        const requestedTheme = params.get('theme');
+        let theme = DEFAULT_THEME;
+
+        try {
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
+          }
+        } catch (error) {
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
+        }
+
+        document.documentElement.dataset.theme = theme;
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: window.__mermaidTheme || 'neutral' });
+    </script>
+    <script type="module" src="partials-loader.js"></script>
+  </head>
+  <body data-page="research">
+    <div data-include="partials/site-header.html"></div>
+    <main class="page-shell">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a> / <a href="research.html">Research</a> / System 2 governance
+      </nav>
+
+      <section class="page-hero">
+        <p class="eyebrow">Research article</p>
+        <h1>System 2 governance for AI-assisted research</h1>
+        <p class="hero-subtitle">
+          As generation gets cheaper, the hard problem becomes epistemic control: what is allowed
+          into the accepted research record, under which constraints, and with what traceability.
+        </p>
+        <p class="hero-text">
+          Large language models behave like a synthetic System 1: fluent, fast, and productive, but
+          vulnerable to hallucination, local optimization, and fragile provenance. High-stakes
+          research therefore needs an external System 2 made of specifications, validators,
+          structured representations, and adversarial review.
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="content-panel article-layout">
+          <p>
+            Large language models are extraordinarily productive generators, but they do not carry
+            their own scientific conscience. They can summarize, compose, and reorganize evidence
+            quickly, yet they remain vulnerable to citation drift, hidden assumptions, overconfident
+            prose, and local reasoning shortcuts. In high-stakes research, that means the real
+            challenge is not generation alone. It is control over what enters the accepted record,
+            under which constraints, and with what traceability.
+          </p>
+          <p>
+            LydiaRX treats that control layer as an external System 2. Specifications, typed
+            structures, validators, provenance, review loops, and explicit rejection mechanisms are
+            the parts that keep fluent generation from becoming polished noise. A good workflow lets
+            models propose, compare, and explore, but it does not allow the same step to also ratify
+            the result. Acceptance has to be earned through external checks that survive model style
+            and model confidence.
+          </p>
+          <p>
+            This principle matters across technical domains. In software, it means tests, schemas,
+            and specifications. In research, it means verified references, auditable analytical
+            steps, and explicit links between claims and evidence. In sensitive environments, it
+            also means human review points that cannot be bypassed by convenience. The same logic
+            underpins governed data environments such as
+            <a href="research-omics-firewall-architecture.html">Omics Firewall</a> and analytical
+            systems such as the
+            <a href="research-dose-titration-workbench.html">dose and titration workbench</a>.
+          </p>
+          <p>
+            The broader implication is that useful AI research systems will be built less like
+            chatbot demos and more like disciplined operating environments. System 2 governance does
+            not slow serious work down for no reason; it creates the conditions under which speed can
+            be trusted. That is why it sits at the center of LydiaRX's view of scientific
+            automation, neuro-symbolic reasoning, and venture-grade AI infrastructure.
+          </p>
+          <h2>Bibliography</h2>
+          <ul class="article-reference-list">
+            <li><a href="https://www.nist.gov/itl/ai-risk-management-framework">NIST, Artificial Intelligence Risk Management Framework.</a></li>
+            <li><a href="https://doi.org/10.1145/3442188.3445922">Bender et al., “On the Dangers of Stochastic Parrots.” FAccT, 2021.</a></li>
+            <li><a href="https://arxiv.org/abs/2212.08073">Bai et al., “Constitutional AI: Harmlessness from AI Feedback.”</a></li>
+            <li><a href="research-structured-science.html">LydiaRX, “Why structured scientific work is becoming automatable.”</a></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <div data-include="partials/site-footer.html"></div>
+  </body>
+</html>

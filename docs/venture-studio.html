@@ -10,26 +10,43 @@
     />
     <script>
       (() => {
-        const storageKey = 'lydiarx-theme';
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
         const params = new URLSearchParams(window.location.search);
         const requestedTheme = params.get('theme');
-        let theme = 'default';
+        let theme = DEFAULT_THEME;
 
         try {
-          if (requestedTheme === 'fusion') {
-            localStorage.setItem(storageKey, 'fusion');
-            theme = 'fusion';
-          } else if (requestedTheme === 'default') {
-            localStorage.removeItem(storageKey);
-          } else if (localStorage.getItem(storageKey) === 'fusion') {
-            theme = 'fusion';
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
           }
         } catch (error) {
-          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
         }
 
         document.documentElement.dataset.theme = theme;
-        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+        // Must run before the Mermaid module below so diagrams use the correct palette on first paint.
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
       })();
     </script>
     <link rel="stylesheet" href="styles.css" />
@@ -55,78 +72,293 @@
       </section>
 
       <section class="section">
-        <div class="split-grid">
-          <div>
-            <h2>From assets to focused operating vehicles</h2>
-            <p class="section-intro">
-              LydiaRX operates as a venture formation platform. It identifies assets with scientific
-              and commercial potential, matures them through focused technical development, validates
-              them through real use cases, and structures them into spin-offs, licensing vehicles,
-              strategic partnerships, or dedicated operating companies.
-            </p>
-            <p class="lead">
-              A genomic dataset may become a genomic analytics venture. A pharmacogenomic programme
-              may become a personalised medicine vehicle. A secure collaboration layer may become
-              infrastructure for several biomedical initiatives. An agentic workflow runtime may
-              become an enterprise AI product.
-            </p>
+        <article class="content-panel intro-panel">
+          <h2>From assets to focused operating vehicles</h2>
+          <p class="section-intro">
+            LydiaRX operates as a venture formation platform. It starts from assets that already
+            carry scientific or commercial signal, matures them through explicit technical work,
+            validates them against real demand, and then shapes the right operating vehicle around
+            them.
+          </p>
+          <p class="lead">
+            A governed dataset can become a genomic AI company. A research workflow can become an
+            enterprise product. A secure infrastructure component can anchor several ventures at
+            once. The point is not to force every asset into the same route, but to move each one
+            through a disciplined sequence from signal to focused execution.
+          </p>
+          <div class="signal-diagram" aria-label="Venture Studio flow from source assets to operating vehicles">
+            <div class="signal-diagram__rail"></div>
+            <div class="signal-diagram__grid">
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg>
+                </span>
+                <span class="signal-diagram__eyebrow">Signal</span>
+                <strong class="signal-diagram__title">Asset substrate</strong>
+                <p class="signal-diagram__summary">Datasets, workflows, infrastructure, and research programmes enter the studio.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M12 3v6"/><path d="m8 7 4 4 4-4"/><path d="M5 15h14"/><path d="M7 19h10"/></svg>
+                </span>
+                <span class="signal-diagram__eyebrow">Build</span>
+                <strong class="signal-diagram__title">Technical maturation</strong>
+                <p class="signal-diagram__summary">Promising signals are turned into prototypes, evidence packages, and tighter product definitions.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/><path d="M5 6v12"/></svg>
+                </span>
+                <span class="signal-diagram__eyebrow">Test</span>
+                <strong class="signal-diagram__title">Commercial proof</strong>
+                <p class="signal-diagram__summary">Pilots, partner conversations, and operating constraints sharpen the real route to market.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M12 4 6 8v8l6 4 6-4V8z"/><path d="M9.5 12.5 11 14l4-4"/></svg>
+                </span>
+                <span class="signal-diagram__eyebrow">Launch</span>
+                <strong class="signal-diagram__title">Focused vehicle</strong>
+                <p class="signal-diagram__summary">The studio chooses a spin-off, partner vehicle, product line, licensing path, or joint venture.</p>
+              </article>
+            </div>
           </div>
-          <div class="diagram-panel">
-            <img class="diagram-image" src="assets/diagram-venture-pipeline.svg" alt="Diagram showing the LydiaRX venture path from source assets to launch." />
-          </div>
-        </div>
+        </article>
       </section>
 
       <section class="section">
-        <h2>Venture formation model</h2>
-        <div class="card-grid">
-          <article class="card">
-            <h3>Asset identification</h3>
-            <p>We start with datasets, workflows, infrastructure components, and research programs that already carry venture potential.</p>
-          </article>
-          <article class="card">
-            <h3>Technical maturation</h3>
-            <p>Promising assets are turned into prototypes, evidence packages, and clearer product definitions.</p>
-          </article>
-          <article class="card">
-            <h3>Commercial structuring</h3>
-            <p>We decide whether the right path is a spin-off, licensing vehicle, product line, joint venture, or strategic partnership.</p>
-          </article>
-          <article class="card">
-            <h3>Validation</h3>
-            <p>Pilots, partner use cases, and market conversations are used to test demand and sharpen the operating model.</p>
-          </article>
-          <article class="card">
-            <h3>Vehicle formation</h3>
-            <p>Once the asset, governance model, and commercial route are mature enough, it becomes a focused operating vehicle.</p>
-          </article>
-        </div>
-      </section>
+        <h2>Six venture spotlights</h2>
+        <div class="spotlight-grid">
+          <button class="spotlight-card" type="button" data-dialog-open="venture-assets-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg>
+            </span>
 
-      <section class="section">
-        <h2>Venture categories</h2>
-        <div class="card-grid">
-          <article class="card">
-            <h3>Genomic AI vehicles</h3>
-            <p>Cohort analytics, biomarker discovery, pharmacogenomics, real-world evidence, and disease-area modules.</p>
-          </article>
-          <article class="card">
-            <h3>Enterprise AI vehicles</h3>
-            <p>Agentic R&amp;D workflows, regulated documentation, private AI deployments, and model governance.</p>
-          </article>
-          <article class="card">
-            <h3>Secure data infrastructure</h3>
-            <p>Omics Firewall, compute-to-data environments, provenance, auditability, and controlled collaboration.</p>
-          </article>
-          <article class="card">
-            <h3>Pharma R&amp;D workbenches</h3>
-            <p>Dose optimisation, titration modelling, trial-design simulation, and evidence synthesis.</p>
-          </article>
-          <article class="card">
-            <h3>Disease-area ventures</h3>
-            <p>Oncology, cardiometabolic disease, rare disease, infectious disease, and population-specific programmes.</p>
-          </article>
+            <strong class="spotlight-card__title">Source assets</strong>
+            <span class="spotlight-card__summary">Datasets, workflows, infrastructure components, and research programmes with venture potential.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="venture-maturation-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 3v6"/><path d="m8 7 4 4 4-4"/><path d="M5 15h14"/><path d="M7 19h10"/></svg>
+            </span>
+
+            <strong class="spotlight-card__title">Technical maturation</strong>
+            <span class="spotlight-card__summary">Prototypes, evidence packages, product framing, and tighter operating boundaries.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="venture-commercial-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="m14 6 6 6-6 6"/><path d="M10 6 4 12l6 6"/></svg>
+            </span>
+
+            <strong class="spotlight-card__title">Commercial routes</strong>
+            <span class="spotlight-card__summary">Spin-off, licensing vehicle, product line, joint venture, or strategic partnership.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="venture-validation-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="m9 12 2 2 5-5"/></svg>
+            </span>
+
+            <strong class="spotlight-card__title">Validation loops</strong>
+            <span class="spotlight-card__summary">Pilots, partner use cases, and market conversations that test real demand.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="venture-vehicle-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 4 6 8v8l6 4 6-4V8z"/><path d="M9.5 12.5 11 14l4-4"/></svg>
+            </span>
+
+            <strong class="spotlight-card__title">Vehicle formation</strong>
+            <span class="spotlight-card__summary">A focused operating vehicle appears once asset, governance, and route are mature enough.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="venture-categories-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/><path d="M8 4v4M12 10v4M16 16v4"/></svg>
+            </span>
+
+            <strong class="spotlight-card__title">Portfolio categories</strong>
+            <span class="spotlight-card__summary">Genomic AI, enterprise AI, secure data infrastructure, workbenches, and disease-area programmes.</span>
+
+          </button>
         </div>
+
+        <dialog class="spotlight-dialog" id="venture-assets-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg>
+              </span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Signal</span>
+                <h3 class="spotlight-dialog__title">Source assets</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>
+                LydiaRX starts with assets that already have technical density: governed datasets,
+                reusable workflows, infrastructure layers, research programmes, and partner-specific
+                evidence packages that point toward a durable business.
+              </p>
+              <p>
+                The studio does not invent ventures from empty branding. It looks for assets that
+                already carry scientific, operational, or commercial leverage and then tests whether
+                they can support a real operating model.
+              </p>
+              <p class="spotlight-dialog__references">Related areas: genomic AI, Omics Firewall, AI Studio, and research-derived workbenches.</p>
+            </div>
+            <div class="spotlight-dialog__actions">
+              <a class="button secondary" href="portfolio.html">Review portfolio themes</a>
+            </div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="venture-maturation-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3v6"/><path d="m8 7 4 4 4-4"/><path d="M5 15h14"/><path d="M7 19h10"/></svg>
+              </span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Build</span>
+                <h3 class="spotlight-dialog__title">Technical maturation</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>
+                Once an asset shows promise, LydiaRX turns it into something legible: prototypes,
+                architecture notes, evidence packages, governance boundaries, and clearer product or
+                platform definitions.
+              </p>
+              <p>
+                This stage is where vague opportunity becomes a defendable technical shape. It is
+                also where the studio decides whether the asset belongs inside a workflow product, a
+                data venture, a partner-facing platform, or a more focused company.
+              </p>
+              <p class="spotlight-dialog__references">Reference themes: evidence packages, technical maturation, and product framing.</p>
+            </div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="venture-commercial-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="m14 6 6 6-6 6"/><path d="M10 6 4 12l6 6"/></svg>
+              </span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Route</span>
+                <h3 class="spotlight-dialog__title">Commercial routes</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>
+                Not every asset should become the same kind of company. Some fit a spin-off. Others
+                are better expressed as a licensing vehicle, a partner-funded programme, a product
+                line, or a joint venture.
+              </p>
+              <p>
+                LydiaRX treats commercial structuring as part of the design process. The route must
+                match the asset, the governance burden, the market timing, and the kind of capital
+                or partnership the opportunity really needs.
+              </p>
+              <p class="spotlight-dialog__references">Reference themes: spin-offs, licensing structures, product lines, and strategic partnerships.</p>
+            </div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="venture-validation-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="m9 12 2 2 5-5"/></svg>
+              </span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Proof</span>
+                <h3 class="spotlight-dialog__title">Validation loops</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>
+                Pilots, partner use cases, and market conversations matter because they reveal
+                whether the asset solves a real problem or only looks elegant in isolation.
+              </p>
+              <p>
+                LydiaRX uses validation to sharpen the operating model: who buys, who benefits, what
+                evidence is still missing, which governance constraints matter, and whether the
+                venture should narrow or broaden before launch.
+              </p>
+              <p class="spotlight-dialog__references">Reference themes: partner pilots, use-case validation, and operating-model refinement.</p>
+            </div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="venture-vehicle-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 4 6 8v8l6 4 6-4V8z"/><path d="M9.5 12.5 11 14l4-4"/></svg>
+              </span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Focus</span>
+                <h3 class="spotlight-dialog__title">Vehicle formation</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>
+                Vehicle formation starts once the asset, commercial route, and governance model are
+                coherent enough to sustain a focused operating unit. At that point the question is
+                no longer whether the signal is interesting, but how to concentrate execution.
+              </p>
+              <p>
+                The outcome may be a dedicated company, a tightly scoped operating vehicle, or a
+                strategic platform line that can later become more independent if demand and control
+                structures support it.
+              </p>
+              <p class="spotlight-dialog__references">Reference themes: focused operating vehicles, governance fit, and execution concentration.</p>
+            </div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="venture-categories-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/><path d="M8 4v4M12 10v4M16 16v4"/></svg>
+              </span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Portfolio</span>
+                <h3 class="spotlight-dialog__title">Portfolio categories</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>
+                The current LydiaRX categories include genomic AI vehicles, enterprise AI vehicles,
+                secure data infrastructure, pharma R&amp;D workbenches, and disease-area ventures. Each
+                category represents a different way of turning governed technical capability into a
+                business.
+              </p>
+              <p>
+                Some categories are platform-heavy, such as Omics Firewall or AI Studio. Others are
+                domain-heavy, such as genomic AI or disease-specific programmes. The studio uses the
+                same formation logic across them while respecting their very different operating
+                constraints.
+              </p>
+              <p class="spotlight-dialog__references">Related pages: AI Studio, Genomic AI, Omics Firewall, Pharma R&amp;D Workbenches, and Portfolio.</p>
+            </div>
+            <div class="spotlight-dialog__actions">
+              <a class="button secondary" href="portfolio.html">Open portfolio page</a>
+            </div>
+          </article>
+        </dialog>
       </section>
 
       <section class="section">

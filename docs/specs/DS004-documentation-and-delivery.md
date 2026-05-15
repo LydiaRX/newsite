@@ -16,7 +16,7 @@ This specification defines the relationship between the public HTML site, the re
 
 The `docs/` directory is the shared publication root for the project. It must contain the public LydiaRX pages, the technical project pages, the shared stylesheet, the shared partials, the specification set, and the specs loader. This arrangement is intentional and must be treated as part of the repository contract.
 
-`AGENTS.md` and the DS files define repository obligations; the HTML technical pages translate those obligations into a browsable project narrative. If wording diverges, the DS files remain authoritative and the HTML pages must be updated to match them. Public business pages must remain free of repository-maintenance artefacts even though the technical pages are published from the same root.
+`AGENTS.md` and the DS files define repository obligations; the HTML technical pages translate those obligations into a browsable project narrative. If wording diverges, the DS files remain authoritative and the HTML pages must be updated to match them. Public business pages must remain free of repository-maintenance artefacts even though the technical pages are published from the same root, with the exception of shared sitewide UI such as consent messaging or explicitly gated review controls that are part of the delivery contract.
 
 `docs/specs/matrix.md` must be generated from DS frontmatter rather than edited manually. The canonical specs loader must be copied into `docs/specsLoader.html` whenever the documentation set is rebuilt.
 
@@ -28,7 +28,7 @@ The repository verification workflow consists of the matrix generator, documenta
 
 ### Question #1: Why are partials and shared JavaScript part of the delivery model?
 
-Response: Shared header and footer fragments keep navigation and project-resource links synchronized across the site without introducing a framework or build step. The loader script is therefore part of the static delivery contract, not an incidental convenience.
+Response: Shared header and footer fragments keep navigation and project-resource links synchronized across the site without introducing a framework or build step. The loader script also synchronizes lightweight shared behaviors such as mobile navigation, breadcrumb normalization into the hero floor, the multi-theme review widget with its default-visible review flag and stored override, dialog behavior, browser-storage messaging, and the animated white-floor helix engine used by the `inspiration` review theme. That engine applies the same seeded particle system across selected floors, but it now combines page and floor identity with a fresh runtime salt so each refresh regenerates a new clustered composition without introducing separate scene families. This runtime behavior is part of the static delivery contract rather than an incidental convenience.
 
 ### Question #2: Why do the public site and the technical documentation share the same `docs/` delivery root?
 

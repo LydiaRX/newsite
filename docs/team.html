@@ -10,26 +10,43 @@
     />
     <script>
       (() => {
-        const storageKey = 'lydiarx-theme';
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
         const params = new URLSearchParams(window.location.search);
         const requestedTheme = params.get('theme');
-        let theme = 'default';
+        let theme = DEFAULT_THEME;
 
         try {
-          if (requestedTheme === 'fusion') {
-            localStorage.setItem(storageKey, 'fusion');
-            theme = 'fusion';
-          } else if (requestedTheme === 'default') {
-            localStorage.removeItem(storageKey);
-          } else if (localStorage.getItem(storageKey) === 'fusion') {
-            theme = 'fusion';
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
           }
         } catch (error) {
-          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
         }
 
         document.documentElement.dataset.theme = theme;
-        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+        // Must run before the Mermaid module below so diagrams use the correct palette on first paint.
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
       })();
     </script>
     <link rel="stylesheet" href="styles.css" />
@@ -47,60 +64,132 @@
       <section class="page-hero">
         <p class="eyebrow">People and advisors</p>
         <h1>Team &amp; Advisors</h1>
-        <p class="hero-subtitle">A team for research, engineering, data governance, and venture formation.</p>
+        <p class="hero-subtitle">Pharmaceutical industry veterans and AI specialists with global life-science experience.</p>
         <p class="hero-text">
-          LydiaRX brings together technical leadership, biomedical research capacity, AI
-          engineering, data governance, venture-building experience, and strategic advisors.
+          Our team brings together pharmaceutical industry veterans and AI specialists with
+          experience across global pharmaceutical companies, regulated environments, and
+          enterprise technology development.
         </p>
       </section>
 
       <section class="section">
         <div class="split-grid">
           <div>
-            <h2>Disclosure-safe public team structure</h2>
+            <h2>Leadership, technology, and life-science expertise</h2>
             <p class="section-intro">
-              LydiaRX requires a profile that matches its thesis: senior technical leadership,
-              applied AI research, biomedical data expertise, secure infrastructure engineering,
-              regulatory awareness, and venture formation experience.
+              LydiaRX brings together executive leadership, AI-native systems engineering,
+              precision-medicine infrastructure knowledge, public-health data strategy, and
+              scientific advisory depth.
             </p>
             <p class="lead">
-              Named profiles can be added as public disclosure is approved. Until then, the public
-              page remains role-based and focused on the capability mix behind LydiaRX.
+              The profiles below are drawn from the current live LydiaRX public team material and
+              reflect the senior people shaping the company&rsquo;s technical, scientific, and strategic
+              direction.
             </p>
           </div>
           <div class="callout">
-            <h2>Representative profile format</h2>
+            <h2>Team profile</h2>
             <p>
-              A final published profile should contain a concise name line, role, and a short
-              biography focused on technical, scientific, or commercial relevance to LydiaRX.
+              From AI infrastructure and privacy-preserving systems to real-world evidence,
+              business development, and enterprise pharmaceutical operations, the team covers the
+              practical disciplines required to build LydiaRX.
             </p>
           </div>
         </div>
       </section>
 
       <section class="section">
-        <h2>Team blocks</h2>
-        <div class="profile-grid">
-          <article class="profile-card">
-            <h3>Founding leadership</h3>
-            <p>Technical and venture leadership overseeing genomic AI, regulated infrastructure, and venture formation.</p>
-          </article>
-          <article class="profile-card">
-            <h3>Scientific and technical advisors</h3>
-            <p>Advisory support across biomedical research, data governance, clinical translation, and secure infrastructure.</p>
-          </article>
-          <article class="profile-card">
-            <h3>Venture and strategic advisors</h3>
-            <p>Commercial guidance on venture structuring, partnerships, capital formation, and international positioning.</p>
-          </article>
-          <article class="profile-card">
-            <h3>Engineering and research contributors</h3>
-            <p>AI engineers, data scientists, research software developers, and scientific automation specialists.</p>
-          </article>
-          <article class="profile-card">
-            <h3>Collaborators</h3>
-            <p>Research institutions, technical partners, clinical collaborators, pharma partners, and venture-building allies.</p>
-          </article>
+        <h2>Current public team</h2>
+        <div class="team-card-grid">
+          <details class="team-card">
+            <summary>
+              <img class="team-card__image" src="assets/team-najib-rehman.png" alt="Najib Rehman" />
+              <span class="team-card__preview">
+                <span class="team-card__role">CEO</span>
+                <span class="team-card__name">Najib Rehman</span>
+                <span class="team-card__teaser">Data and analytics technology expert with nearly two decades in life sciences.</span>
+              </span>
+              <span class="team-card__toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="team-card__body">
+              <p>
+                Najib is a data and analytics technology expert that has worked in life science for
+                almost 20 years. From working within big pharma on their systems, processes and
+                enabling capabilities through to being a founding member of ATMPS Ltd, a startup
+                that developed the world&rsquo;s first patented blockchain solution in life sciences for
+                tracking personalised medicine. He has spent time working with commercial and
+                clinical functions on the challenges that they need to overcome to make data
+                meaningful and thus drive value for the business, as well as building the foundation
+                needed to take advantage of newer capabilities such as AI and ML.
+              </p>
+              <p class="team-card__references">Reference: current public LydiaRX leadership profile and operating focus.</p>
+            </div>
+          </details>
+          <details class="team-card">
+            <summary>
+              <img class="team-card__image" src="assets/team-sinica-alboaie.png" alt="S&icirc;nic&#259; Alboaie" />
+              <span class="team-card__preview">
+                <span class="team-card__role">CTO</span>
+                <span class="team-card__name">S&icirc;nic&#259; Alboaie</span>
+                <span class="team-card__teaser">AI researcher focused on privacy-aware systems, neuro-symbolic integration, and agentic harnesses.</span>
+              </span>
+              <span class="team-card__toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="team-card__body">
+              <p>
+                S&icirc;nic&#259; works at the intersection of AI research, privacy-preserving
+                architectures, and systems integration. His work focuses on neuro-symbolic
+                reasoning, agentic harnesses that keep models inside explicit execution boundaries,
+                and the infrastructure needed to connect tools, memory, data, and human review in a
+                disciplined way. He is also the initiator of the open-source OpenDSU project, which
+                gives LydiaRX a strong foundation for identity, controlled data handling, and
+                interoperable integration patterns.
+              </p>
+              <p class="team-card__references">References: OpenDSU, privacy-preserving systems research, and LydiaRX AI integration work.</p>
+            </div>
+          </details>
+          <details class="team-card">
+            <summary>
+              <img class="team-card__image" src="assets/team-andrew-roddam.png" alt="Dr Andrew Roddam" />
+              <span class="team-card__preview">
+                <span class="team-card__role">Advisor</span>
+                <span class="team-card__name">Dr Andrew Roddam</span>
+                <span class="team-card__teaser">Life-sciences executive and internationally recognized epidemiologist.</span>
+              </span>
+              <span class="team-card__toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="team-card__body">
+              <p>
+                Dr Andrew Roddam is a life-sciences executive with more than 25 years of
+                experience spanning academia, pharmaceuticals, biotechnology, and public health. He
+                leads business development at EveryONE Medicines, previously served as CEO of Our
+                Future Health, and advises multiple organizations on data-driven healthcare
+                innovation.
+              </p>
+              <p class="team-card__references">Reference: current public LydiaRX advisor profile and leadership roles.</p>
+            </div>
+          </details>
+          <details class="team-card">
+            <summary>
+              <img class="team-card__image" src="assets/team-shahid-hanif.png" alt="Shahid Hanif" />
+              <span class="team-card__preview">
+                <span class="team-card__role">Advisor</span>
+                <span class="team-card__name">Shahid Hanif</span>
+                <span class="team-card__teaser">Strategic advisor focused on health data, evidence generation, and patient outcomes.</span>
+              </span>
+              <span class="team-card__toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="team-card__body">
+              <p>
+                Dr Shahid Hanif is a life-sciences executive with over 20 years of experience,
+                specialising in strategic and collaborative approaches to data, evidence
+                generation, and patient outcomes. He has led multistakeholder evidence initiatives,
+                founded Avenzoar Consulting, and is known for aligning organizational goals with
+                emerging healthcare trends through practical cross-sector partnerships.
+              </p>
+              <p class="team-card__references">Reference: current public LydiaRX advisor profile and evidence strategy roles.</p>
+            </div>
+          </details>
         </div>
       </section>
 
@@ -108,8 +197,8 @@
         <div class="cta-band">
           <h2>Work with LydiaRX.</h2>
           <p>
-            We are interested in senior researchers, AI engineers, biomedical data specialists,
-            pharma R&amp;D experts, secure infrastructure architects, venture builders, and advisors.
+            Contact LydiaRX for venture discussions, life-science partnerships, AI infrastructure,
+            public-health data programs, or strategic advisory collaboration.
           </p>
           <a class="button secondary" href="contact.html">Contact the Team</a>
         </div>

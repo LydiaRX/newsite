@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Omics Firewall and sovereign genomic infrastructure - LydiaRX AG</title>
+    <meta
+      name="description"
+      content="A LydiaRX architecture note on Omics Firewall: governed genomic custody, compute-to-data access, and sovereign research infrastructure."
+    />
+    <script>
+      (() => {
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
+        const params = new URLSearchParams(window.location.search);
+        const requestedTheme = params.get('theme');
+        let theme = DEFAULT_THEME;
+
+        try {
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
+          }
+        } catch (error) {
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
+        }
+
+        document.documentElement.dataset.theme = theme;
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: window.__mermaidTheme || 'neutral' });
+    </script>
+    <script type="module" src="partials-loader.js"></script>
+  </head>
+  <body data-page="research">
+    <div data-include="partials/site-header.html"></div>
+    <main class="page-shell">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a> / <a href="research.html">Research</a> / Omics Firewall architecture
+      </nav>
+
+      <section class="page-hero">
+        <p class="eyebrow">Research article</p>
+        <h1>Omics Firewall and sovereign genomic infrastructure</h1>
+        <p class="hero-subtitle">
+          Sensitive genomic programmes need more than storage. They need custody, policy
+          enforcement, key separation, and controlled workspaces that keep the data sovereign while
+          still making research possible.
+        </p>
+        <p class="hero-text">
+          Omics Firewall is LydiaRX's architecture term for a governed compute-to-data layer around
+          genomic and other high-sensitivity omics assets. The idea is to move analysis toward the
+          data, preserve auditability, and expose only tightly controlled research surfaces to
+          humans and AI systems.
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="content-panel article-layout">
+          <p>
+            Omics Firewall is LydiaRX's name for a governed genomic infrastructure model in which
+            storage, identity, key custody, policy interpretation, approved computation, and output
+            release are treated as distinct control surfaces rather than blurred together inside a
+            generic data lake. That separation matters because genomic data is durable, sensitive,
+            difficult to anonymize perfectly, and strategically valuable across many future uses.
+            Once such data is copied and scattered, both governance and commercial defensibility
+            weaken quickly.
+          </p>
+          <p>
+            The architecture therefore favors a hub-and-spoke pattern and a compute-to-data mindset.
+            Data can be collected and curated close to the source while programme-level governance
+            manages metadata, lineage, permissions, release rules, and approved workspaces. Analysts
+            and AI systems should move toward governed execution environments instead of turning raw
+            genomic records into freely portable files. The goal is not to make research difficult;
+            it is to make serious research possible without dissolving the conditions of custody.
+          </p>
+          <p>
+            This is also where Omics Firewall connects to the rest of the LydiaRX stack. Richer
+            models, including
+            <a href="research-neuro-symbolic-genomics.html">neuro-symbolic genomic systems</a>,
+            only become strategically meaningful when they can run on valuable data assets under
+            enforceable controls. Likewise, the governance principles described in
+            <a href="research-system2-governance.html">System 2 governance</a> need an
+            infrastructure expression, not just a policy memo. Omics Firewall is that expression at
+            the data and execution layer.
+          </p>
+          <p>
+            For LydiaRX, sovereign genomic infrastructure is therefore not a support function. It is
+            the operational foundation that allows research programmes, partner workspaces, and
+            venture vehicles to grow around serious data without giving up control of the underlying
+            asset. A firewall model turns exceptional, manually negotiated access into a repeatable,
+            reviewable operating system for biomedical collaboration.
+          </p>
+          <h2>Bibliography</h2>
+          <ul class="article-reference-list">
+            <li><a href="https://www.ga4gh.org/genomic-data-toolkit/regulatory-ethics-toolkit/framework-for-responsible-sharing-genomic-and-health-related-data/">GA4GH, Framework for Responsible Sharing of Genomic and Health-Related Data.</a></li>
+            <li><a href="https://www.nist.gov/itl/ai-risk-management-framework">NIST, Artificial Intelligence Risk Management Framework.</a></li>
+            <li><a href="https://grants.nih.gov/grants/guide/notice-files/NOT-OD-22-198.html">NIH Genomic Data Sharing Policy update.</a></li>
+            <li><a href="https://doi.org/10.3389/fbloc.2020.566731">PharmaLedger / OpenDSU architecture reference.</a></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <div data-include="partials/site-footer.html"></div>
+  </body>
+</html>

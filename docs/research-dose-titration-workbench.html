@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A multi-agent dose and titration workbench - LydiaRX AG</title>
+    <meta
+      name="description"
+      content="A LydiaRX technical brief on a multi-agent workbench for dose and titration research, grounded in traceable analysis and simulation."
+    />
+    <script>
+      (() => {
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
+        const params = new URLSearchParams(window.location.search);
+        const requestedTheme = params.get('theme');
+        let theme = DEFAULT_THEME;
+
+        try {
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
+          }
+        } catch (error) {
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
+        }
+
+        document.documentElement.dataset.theme = theme;
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: window.__mermaidTheme || 'neutral' });
+    </script>
+    <script type="module" src="partials-loader.js"></script>
+  </head>
+  <body data-page="research">
+    <div data-include="partials/site-header.html"></div>
+    <main class="page-shell">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a> / <a href="research.html">Research</a> / Dose and titration workbench
+      </nav>
+
+      <section class="page-hero">
+        <p class="eyebrow">Research article</p>
+        <h1>A multi-agent dose and titration workbench</h1>
+        <p class="hero-subtitle">
+          Dose selection is expensive, iterative, and easy to oversimplify. The opportunity is not
+          to automate judgment away, but to structure the analytical work around it more rigorously.
+        </p>
+        <p class="hero-text">
+          LydiaRX has explored a research-grade workbench for dose and titration analysis in next-
+          generation metabolic and obesity therapeutics. The concept combines independent analytical
+          agents, simulation, and explicit challenge tests so teams can compare candidate dosing
+          strategies under stronger epistemic control.
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="content-panel article-layout">
+          <p>
+            Dose and titration work looks deceptively simple when reduced to a single question such
+            as “what is the best dose?” In practice, the problem is a moving balance between
+            efficacy, tolerability, persistence, discontinuation, subgroup heterogeneity, and trial
+            design. A higher dose may improve average response while worsening dropout. A slower
+            escalation may preserve adherence but delay therapeutic effect. The right question is
+            therefore not just about dose level, but about which dosing path produces the most
+            defensible benefit-risk profile for different patient types.
+          </p>
+          <p>
+            That is why LydiaRX frames the opportunity as a governed multi-agent workbench rather
+            than as one persuasive model. Independent analytical units can examine the same curated
+            dataset from different perspectives: longitudinal efficacy, adverse events, exposure
+            response, subgroup structure, titration-policy simulation, and synthetic challenge
+            testing. The value comes from comparison and disagreement as much as from convergence. If
+            multiple methods support the same strategy, confidence improves. If they diverge, the
+            disagreement reveals what still needs to be understood.
+          </p>
+          <p>
+            The synthetic challenge layer is especially important. Before a modelling stack is used
+            to influence an expensive study, it should be tested against artificial scenarios where
+            the hidden mechanism is known: informative dropout, intolerance bias, misleading
+            escalation patterns, or subgroup instability. This turns the workbench into a research
+            environment rather than a black-box recommendation engine. It is also why the programme
+            fits naturally with
+            <a href="research-system2-governance.html">System 2 governance</a> and the broader idea
+            of <a href="research-structured-science.html">structured scientific automation</a>.
+          </p>
+          <p>
+            The commercial value of such a workbench is straightforward. Better structured dose and
+            titration reasoning can improve what gets tested next, how uncertainty is explained to
+            partners, and which hypotheses are worth the cost of empirical follow-up. In that sense,
+            the workbench is a concrete example of LydiaRX's wider thesis that agentic, traceable
+            AI infrastructure becomes meaningful when it is tied to a real R&amp;D decision surface.
+          </p>
+          <h2>Bibliography</h2>
+          <ul class="article-reference-list">
+            <li><a href="https://www.fda.gov/regulatory-information/search-fda-guidance-documents/exposure-response-relationships-study-design-data-analysis-and-regulatory-applications">FDA, Exposure-Response Relationships Guidance.</a></li>
+            <li><a href="https://www.fda.gov/regulatory-information/search-fda-guidance-documents/adaptive-design-clinical-trials-drugs-and-biologics-guidance-industry">FDA, Adaptive Designs for Clinical Trials of Drugs and Biologics.</a></li>
+            <li><a href="https://database.ich.org/sites/default/files/E9-R1_Step4_Guideline_2019_1203.pdf">ICH E9(R1), Addendum on Estimands and Sensitivity Analysis in Clinical Trials.</a></li>
+            <li><a href="research-system2-governance.html">LydiaRX, “System 2 governance for AI-assisted research.”</a></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <div data-include="partials/site-footer.html"></div>
+  </body>
+</html>

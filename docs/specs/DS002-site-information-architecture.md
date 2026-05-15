@@ -28,6 +28,12 @@ The site must include the following public pages:
 - `pharma-rd-workbenches.html`
 - `portfolio.html`
 - `research.html`
+- `research-structured-science.html`
+- `research-system2-governance.html`
+- `research-omics-firewall-architecture.html`
+- `research-neuro-symbolic-genomics.html`
+- `research-dose-titration-workbench.html`
+- `research-genomic-ai-venture-thesis.html`
 - `team.html`
 - `contact.html`
 
@@ -36,7 +42,7 @@ The site must also include technical project pages that explain the repository s
 - `project-architecture.html`
 - `repository-governance.html`
 
-Every non-home page must include a breadcrumb path back to `index.html`. Technical pages must explicitly link to `specsLoader.html?spec=matrix.md` and to `specsLoader.html?spec=DS001-coding-style.md`.
+Every non-home page must include a breadcrumb path back to `index.html`. The `research.html` page acts as the public hub for the linked research article pages, and those article pages remain part of the public site rather than technical project documentation. Technical pages must explicitly link to `specsLoader.html?spec=matrix.md` and to `specsLoader.html?spec=DS001-coding-style.md`.
 
 Public-facing business pages must not expose repository-internal implementation notes, specification summaries, bootstrap catalogs, or maintenance-oriented navigation blocks inside their body content. Those materials belong only on dedicated technical project pages.
 

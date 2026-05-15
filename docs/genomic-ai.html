@@ -10,26 +10,43 @@
     />
     <script>
       (() => {
-        const storageKey = 'lydiarx-theme';
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
         const params = new URLSearchParams(window.location.search);
         const requestedTheme = params.get('theme');
-        let theme = 'default';
+        let theme = DEFAULT_THEME;
 
         try {
-          if (requestedTheme === 'fusion') {
-            localStorage.setItem(storageKey, 'fusion');
-            theme = 'fusion';
-          } else if (requestedTheme === 'default') {
-            localStorage.removeItem(storageKey);
-          } else if (localStorage.getItem(storageKey) === 'fusion') {
-            theme = 'fusion';
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
           }
         } catch (error) {
-          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
         }
 
         document.documentElement.dataset.theme = theme;
-        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+        // Must run before the Mermaid module below so diagrams use the correct palette on first paint.
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
       })();
     </script>
     <link rel="stylesheet" href="styles.css" />
@@ -55,55 +72,116 @@
       </section>
 
       <section class="section">
-        <div class="split-grid">
-          <div>
-            <h2>Research-grade genomic-clinical intelligence</h2>
-            <p class="section-intro">
-              LydiaRX develops genomic-clinical AI platforms that connect genomic data with
-              phenotype, treatment history, outcomes, clinical metadata, biomedical literature, and
-              longitudinal follow-up.
-            </p>
-            <p class="lead">
-              The initial strategic programme is connected to Pakistan through collaboration with
-              Precision Omics. The broader objective is to create scalable genomic-clinical AI
-              platforms for pharma research, pharmacogenomics, biomarker discovery, trial
-              feasibility, real-world evidence, and disease-area venture vehicles.
-            </p>
+        <article class="content-panel intro-panel">
+          <h2>Research-grade genomic-clinical intelligence</h2>
+          <p class="section-intro">
+            LydiaRX develops genomic-clinical AI platforms that connect genomic data with phenotype,
+            treatment history, outcomes, clinical metadata, biomedical literature, and longitudinal
+            follow-up.
+          </p>
+          <p class="lead">
+            The initial strategic programme is connected to Pakistan through collaboration with
+            Precision Omics. The broader objective is to create scalable genomic-clinical AI
+            platforms for pharma research, pharmacogenomics, biomarker discovery, trial feasibility,
+            real-world evidence, and disease-area venture vehicles.
+          </p>
+          <div class="signal-diagram" aria-label="Genomic AI flow from cohort data to partner outcomes">
+            <div class="signal-diagram__rail"></div>
+            <div class="signal-diagram__grid">
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4c4 0 8 4 8 8s-4 8-8 8"/><path d="M8 4c-4 0-8 4-8 8s4 8 8 8"/><path d="M6 8h12M6 16h12"/></svg></span>
+                <span class="signal-diagram__eyebrow">Input</span>
+                <strong class="signal-diagram__title">Cohort substrate</strong>
+                <p class="signal-diagram__summary">Genomic, clinical, phenotypic, and longitudinal evidence is assembled into governed cohorts.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19h14"/><path d="M7 17V8"/><path d="M12 17V5"/><path d="M17 17v-6"/></svg></span>
+                <span class="signal-diagram__eyebrow">Inference</span>
+                <strong class="signal-diagram__title">Analytical layers</strong>
+                <p class="signal-diagram__summary">Variant reasoning, biomarker signals, pharmacogenomic patterns, and cohort questions are explored.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="m13 6 6 6-6 6"/><path d="M5 6v12"/></svg></span>
+                <span class="signal-diagram__eyebrow">Translation</span>
+                <strong class="signal-diagram__title">Partner workspaces</strong>
+                <p class="signal-diagram__summary">Insights are shaped into study support, stratification, and evidence packages for collaboration.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 8v8l6 4 6-4V8z"/><path d="M9.5 12.5 11 14l4-4"/></svg></span>
+                <span class="signal-diagram__eyebrow">Outcome</span>
+                <strong class="signal-diagram__title">Venture modules</strong>
+                <p class="signal-diagram__summary">Promising signals become venture-ready disease modules, workspaces, or partner-facing analytical assets.</p>
+              </article>
+            </div>
           </div>
-          <div class="diagram-panel">
-            <img class="diagram-image" src="assets/diagram-genomic-ai-layers.svg" alt="Diagram showing cohorts flowing through genomic inference toward biomarker, trial, and partner outcomes." />
-          </div>
-        </div>
+        </article>
       </section>
 
       <section class="section">
-        <h2>Product and venture areas</h2>
-        <div class="card-grid">
-          <article class="card">
-            <h3>Genomic-clinical AI</h3>
-            <p>AI-assisted interpretation of genomic, phenotypic, clinical, and longitudinal data.</p>
-          </article>
-          <article class="card">
-            <h3>Pharmacogenomics</h3>
-            <p>Population-specific drug-response research and later validated clinical modules.</p>
-          </article>
-          <article class="card">
-            <h3>Biomarker discovery</h3>
-            <p>Prioritisation of biomarkers for disease-area research and partner evidence generation.</p>
-          </article>
-          <article class="card">
-            <h3>Trial feasibility</h3>
-            <p>Cohort search, patient stratification, and trial-design support for pharma teams.</p>
-          </article>
-          <article class="card">
-            <h3>Pharma research workspaces</h3>
-            <p>Controlled environments for analysis, reporting, and structured partner collaboration.</p>
-          </article>
-          <article class="card">
-            <h3>Disease-area modules</h3>
-            <p>Focused platforms for oncology, cardiometabolic disease, rare disease, infectious disease, and other selected areas.</p>
-          </article>
+        <h2>Six genomic AI spotlights</h2>
+        <div class="spotlight-grid">
+          <button class="spotlight-card" type="button" data-dialog-open="genomic-core-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4c4 0 8 4 8 8s-4 8-8 8"/><path d="M8 4c-4 0-8 4-8 8s4 8 8 8"/><path d="M6 8h12M6 16h12"/></svg></span>
+
+            <strong class="spotlight-card__title">Genomic-clinical AI</strong>
+            <span class="spotlight-card__summary">Interpretation across genomic, phenotypic, clinical, and longitudinal layers.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="genomic-pg-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10"/><path d="M9 4v6l-3 5a3 3 0 0 0 2.6 5h6.8A3 3 0 0 0 18 15l-3-5V4"/></svg></span>
+
+            <strong class="spotlight-card__title">Pharmacogenomics</strong>
+            <span class="spotlight-card__summary">Population-specific drug-response research and future clinically grounded modules.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="genomic-biomarker-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 10h14"/><path d="m8 7 4-4 4 4"/><path d="m8 17 4 4 4-4"/></svg></span>
+
+            <strong class="spotlight-card__title">Biomarker discovery</strong>
+            <span class="spotlight-card__summary">Prioritisation of biomarkers for disease programmes and partner evidence generation.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="genomic-trial-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="m13 6 6 6-6 6"/><path d="M5 6v12"/></svg></span>
+
+            <strong class="spotlight-card__title">Trial feasibility</strong>
+            <span class="spotlight-card__summary">Cohort search, patient stratification, and trial-design support for pharma teams.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="genomic-workspace-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></span>
+
+            <strong class="spotlight-card__title">Research workspaces</strong>
+            <span class="spotlight-card__summary">Controlled analytical environments for reporting, collaboration, and partner execution.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="genomic-disease-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h7v12H4z"/><path d="M13 6h7v5h-7z"/><path d="M13 13h7v5h-7z"/></svg></span>
+
+            <strong class="spotlight-card__title">Disease-area modules</strong>
+            <span class="spotlight-card__summary">Oncology, cardiometabolic, rare disease, infectious disease, and selected population-specific programmes.</span>
+
+          </button>
         </div>
+
+        <dialog class="spotlight-dialog" id="genomic-core-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4c4 0 8 4 8 8s-4 8-8 8"/><path d="M8 4c-4 0-8 4-8 8s4 8 8 8"/><path d="M6 8h12M6 16h12"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Core layer</span><h3 class="spotlight-dialog__title">Genomic-clinical AI</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>This layer connects genomic evidence to phenotype, treatment history, outcomes, literature, and other clinical context so that analysis remains closer to real biomedical questions.</p><p>The result is not a generic model claim but a governed analytical substrate for research, partner work, and future venture formation.</p></div></article>
+        </dialog>
+        <dialog class="spotlight-dialog" id="genomic-pg-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10"/><path d="M9 4v6l-3 5a3 3 0 0 0 2.6 5h6.8A3 3 0 0 0 18 15l-3-5V4"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Population response</span><h3 class="spotlight-dialog__title">Pharmacogenomics</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Pharmacogenomics is one of the clearest routes from governed genomic data into high-value translational research. It links population-specific biology to treatment response, tolerability, and later partner-facing analytical modules.</p><p>LydiaRX frames this as a research-grade programme first, with stronger evidence and governance before any mature clinical deployment story is implied.</p></div></article>
+        </dialog>
+        <dialog class="spotlight-dialog" id="genomic-biomarker-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 10h14"/><path d="m8 7 4-4 4 4"/><path d="m8 17 4 4 4-4"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Signal extraction</span><h3 class="spotlight-dialog__title">Biomarker discovery</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Biomarker discovery gives the genomic stack a tangible output: candidate markers for disease understanding, study design, stratification, and partner evidence packages.</p><p>The value comes from connecting biomarker work to governed datasets and disciplined analytical environments rather than treating it as a one-off model output.</p></div></article>
+        </dialog>
+        <dialog class="spotlight-dialog" id="genomic-trial-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="m13 6 6 6-6 6"/><path d="M5 6v12"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Translation</span><h3 class="spotlight-dialog__title">Trial feasibility</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Trial support is where cohort intelligence becomes operationally useful: patient finding, subgroup reasoning, feasibility signals, and study-design support for external partners.</p><p>This makes Genomic AI relevant not only for discovery narratives but also for concrete pharma-facing workflows.</p></div></article>
+        </dialog>
+        <dialog class="spotlight-dialog" id="genomic-workspace-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Execution</span><h3 class="spotlight-dialog__title">Research workspaces</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Controlled research workspaces let LydiaRX expose collaboration surfaces without losing data discipline. They support analysis, reporting, partner review, and governed AI-assisted workflows.</p><p>This is the bridge between genomic infrastructure and usable partner operations.</p></div></article>
+        </dialog>
+        <dialog class="spotlight-dialog" id="genomic-disease-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h7v12H4z"/><path d="M13 6h7v5h-7z"/><path d="M13 13h7v5h-7z"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Modules</span><h3 class="spotlight-dialog__title">Disease-area modules</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Disease-area modules are how the genomic platform becomes more focused over time. Oncology, cardiometabolic disease, rare disease, infectious disease, and selected local-population programmes can each become their own operating path.</p><p>The point is to let one governed substrate support multiple future venture routes.</p></div></article>
+        </dialog>
       </section>
 
       <section class="section">

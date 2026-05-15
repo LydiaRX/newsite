@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Why structured scientific work is becoming automatable - LydiaRX AG</title>
+    <meta
+      name="description"
+      content="A LydiaRX research note on why AI co-scientists, self-driving labs, and simulation-heavy workflows are making structured scientific work increasingly automatable."
+    />
+    <script>
+      (() => {
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
+        const params = new URLSearchParams(window.location.search);
+        const requestedTheme = params.get('theme');
+        let theme = DEFAULT_THEME;
+
+        try {
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
+          }
+        } catch (error) {
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
+        }
+
+        document.documentElement.dataset.theme = theme;
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: window.__mermaidTheme || 'neutral' });
+    </script>
+    <script type="module" src="partials-loader.js"></script>
+  </head>
+  <body data-page="research">
+    <div data-include="partials/site-header.html"></div>
+    <main class="page-shell">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a> / <a href="research.html">Research</a> / Structured scientific work
+      </nav>
+
+      <section class="page-hero">
+        <p class="eyebrow">Research article</p>
+        <h1>Why structured scientific work is becoming automatable</h1>
+        <p class="hero-subtitle">
+          Scientific autonomy is not arriving all at once, but more of the recurring work of
+          science is becoming explicit enough to be executed, checked, and improved by machines.
+        </p>
+        <p class="hero-text">
+          The strongest claim is not that AI will suddenly replace scientists. It is that a growing
+          share of scientific work is becoming structured enough to support machine-mediated
+          execution. Hypothesis generation, simulation, experiment planning, and consistency
+          checking are all becoming more formal, and that changes what can realistically be
+          automated.
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="content-panel article-layout">
+          <p>
+            The important shift in science is not that machines suddenly become scientists in the
+            human sense. It is that more of the recurring work around science is becoming explicit
+            enough to be executed, checked, and improved through machine-mediated systems. Literature
+            review, hypothesis comparison, simulation, method drafting, consistency checking, and
+            evidence packaging all contain repeatable structure. Once that structure is expressed
+            clearly, the workflow stops looking like pure inspiration and starts looking like a
+            governable process.
+          </p>
+          <p>
+            This matters because modern research programmes already depend on layers of software,
+            datasets, notebooks, protocol versions, external references, and cross-team decisions.
+            When these dependencies remain implicit, AI can help locally but cannot preserve the
+            logic of the programme over time. When claims, inputs, assumptions, and validation steps
+            are represented more explicitly, AI systems can move from drafting assistance into
+            structured participation. That is the point where scientific work becomes partially
+            automatable without collapsing into black-box automation.
+          </p>
+          <p>
+            The most credible form of that transition is a society of specialised tools and agents,
+            not one universal research oracle. Different roles are needed to propose, simulate,
+            criticize, reproduce, and reject. That is why this thesis connects naturally to
+            <a href="research-system2-governance.html">System 2 governance</a> and to applied
+            workbenches such as the
+            <a href="research-dose-titration-workbench.html">dose and titration programme</a>.
+            Generation becomes more useful when it is surrounded by validation, provenance, and
+            explicit criteria for acceptance.
+          </p>
+          <p>
+            For LydiaRX, the practical consequence is that infrastructure, governance, and domain
+            workflows matter as much as the base model. Scientific automation becomes valuable when
+            it operates inside real research environments with controlled data access, reproducible
+            execution, and workflows that can mature into partner-facing assets. That is why the
+            article is less about generic AI optimism and more about the conditions under which
+            serious scientific work can be structured well enough to support durable automation.
+          </p>
+          <h2>Bibliography</h2>
+          <ul class="article-reference-list">
+            <li><a href="https://research.google/blog/accelerating-scientific-breakthroughs-with-an-ai-co-scientist/">Google Research, “Accelerating scientific breakthroughs with an AI co-scientist.”</a></li>
+            <li><a href="https://doi.org/10.1038/s43586-023-00278-9">Nature Reviews Methods Primers, “Self-driving laboratories.”</a></li>
+            <li><a href="https://www.nature.com/articles/s41586-021-03819-2">Jumper et al., “Highly accurate protein structure prediction with AlphaFold.” Nature, 2021.</a></li>
+            <li><a href="https://www.nist.gov/itl/ai-risk-management-framework">NIST, Artificial Intelligence Risk Management Framework.</a></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <div data-include="partials/site-footer.html"></div>
+  </body>
+</html>

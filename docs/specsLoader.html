@@ -5,26 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>
     (() => {
-      const storageKey = 'lydiarx-theme';
+      const DEFAULT_THEME = 'default';
+      const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+      const THEME_STORAGE_KEY = 'lydiarx-theme';
+      const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+      const DEFAULT_DEV_MODE = true;
       const params = new URLSearchParams(window.location.search);
       const requestedTheme = params.get('theme');
-      let theme = 'default';
+      let theme = DEFAULT_THEME;
 
       try {
-        if (requestedTheme === 'fusion') {
-          localStorage.setItem(storageKey, 'fusion');
-          theme = 'fusion';
-        } else if (requestedTheme === 'default') {
-          localStorage.removeItem(storageKey);
-        } else if (localStorage.getItem(storageKey) === 'fusion') {
-          theme = 'fusion';
+        const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+        const hasDevMode =
+          storedDevMode === 'true' ||
+          (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+        if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+          localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+          theme = requestedTheme;
+        } else if (requestedTheme === DEFAULT_THEME) {
+          localStorage.removeItem(THEME_STORAGE_KEY);
+        } else {
+          const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+          if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+            theme = storedTheme;
+          } else if (!hasDevMode) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          }
         }
       } catch (error) {
-        theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+        theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
       }
 
       document.documentElement.dataset.theme = theme;
-      window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+      // Must run before the Mermaid module below so diagrams use the correct palette on first paint.
+      window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
     })();
   </script>
   <title>Specification Matrix - LydiaRX AG Documentation</title>

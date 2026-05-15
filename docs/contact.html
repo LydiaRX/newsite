@@ -10,26 +10,43 @@
     />
     <script>
       (() => {
-        const storageKey = 'lydiarx-theme';
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
         const params = new URLSearchParams(window.location.search);
         const requestedTheme = params.get('theme');
-        let theme = 'default';
+        let theme = DEFAULT_THEME;
 
         try {
-          if (requestedTheme === 'fusion') {
-            localStorage.setItem(storageKey, 'fusion');
-            theme = 'fusion';
-          } else if (requestedTheme === 'default') {
-            localStorage.removeItem(storageKey);
-          } else if (localStorage.getItem(storageKey) === 'fusion') {
-            theme = 'fusion';
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
           }
         } catch (error) {
-          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
         }
 
         document.documentElement.dataset.theme = theme;
-        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+        // Must run before the Mermaid module below so diagrams use the correct palette on first paint.
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
       })();
     </script>
     <link rel="stylesheet" href="styles.css" />
@@ -47,10 +64,11 @@
       <section class="page-hero">
         <p class="eyebrow">Partnerships and inquiries</p>
         <h1>Contact LydiaRX AG</h1>
-        <p class="hero-subtitle">Partnerships, venture formation, and scientific collaboration.</p>
+        <p class="hero-subtitle">Partnerships, venture formation, scientific collaboration, and direct access to the core team.</p>
         <p class="hero-text">
           We work with investors, pharma companies, biotechnology firms, research institutions,
-          hospitals, governments, and technical partners.
+          hospitals, governments, and technical partners, and we connect the right conversation to
+          the people leading strategy, technology, and evidence.
         </p>
       </section>
 
@@ -72,36 +90,14 @@
       </section>
 
       <section class="section">
-        <h2>Suggested discussion tracks</h2>
-        <div class="card-grid">
-          <article class="card">
-            <h3>Investment</h3>
-            <p><strong>Subject line:</strong> Investment discussion with LydiaRX AG</p>
-          </article>
-          <article class="card">
-            <h3>Pharma partnership</h3>
-            <p><strong>Subject line:</strong> Pharma R&amp;D or genomic AI partnership</p>
-          </article>
-          <article class="card">
-            <h3>LydiaRX AI Studio</h3>
-            <p><strong>Subject line:</strong> LydiaRX AI Studio pilot discussion</p>
-          </article>
-          <article class="card">
-            <h3>Omics Firewall</h3>
-            <p><strong>Subject line:</strong> Secure biomedical data collaboration discussion</p>
-          </article>
-          <article class="card">
-            <h3>Venture formation</h3>
-            <p><strong>Subject line:</strong> Venture vehicle formation discussion</p>
-          </article>
-          <article class="card">
-            <h3>Research collaboration</h3>
-            <p><strong>Subject line:</strong> Research and evidence collaboration</p>
-          </article>
-          <article class="card">
-            <h3>Talent or advisors</h3>
-            <p><strong>Subject line:</strong> LydiaRX team or advisor discussion</p>
-          </article>
+        <div class="callout">
+          <h2>See the team before you reach out</h2>
+          <p>
+            The LydiaRX leadership and advisor profiles now live on the
+            <a href="team.html">Team &amp; Advisors</a> page, where the same compact expandable cards
+            make it easier to understand who should join a partnership, product, or research
+            conversation.
+          </p>
         </div>
       </section>
 

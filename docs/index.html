@@ -10,26 +10,43 @@
     />
     <script>
       (() => {
-        const storageKey = 'lydiarx-theme';
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
         const params = new URLSearchParams(window.location.search);
         const requestedTheme = params.get('theme');
-        let theme = 'default';
+        let theme = DEFAULT_THEME;
 
         try {
-          if (requestedTheme === 'fusion') {
-            localStorage.setItem(storageKey, 'fusion');
-            theme = 'fusion';
-          } else if (requestedTheme === 'default') {
-            localStorage.removeItem(storageKey);
-          } else if (localStorage.getItem(storageKey) === 'fusion') {
-            theme = 'fusion';
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
           }
         } catch (error) {
-          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
         }
 
         document.documentElement.dataset.theme = theme;
-        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+        // Must run before the Mermaid module below so diagrams use the correct palette on first paint.
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
       })();
     </script>
     <link rel="stylesheet" href="styles.css" />
@@ -59,45 +76,232 @@
               <a class="button secondary" href="contact.html">Discuss a Partnership</a>
             </div>
           </div>
-          <aside class="hero-card">
-            <strong>Built for scientific markets where reliability matters.</strong>
-            <p>
-              LydiaRX combines venture formation with deployable AI, secure biomedical collaboration,
-              and evidence-oriented technical systems.
-            </p>
-            <p class="caption">Pharma, biotechnology, genomic medicine, and regulated enterprise workflows.</p>
-          </aside>
+          <div class="hero-side-stack">
+            <aside class="hero-card">
+              <strong>Built for scientific markets where reliability matters.</strong>
+              <p>
+                LydiaRX combines venture formation with deployable AI, secure biomedical collaboration,
+                and evidence-oriented technical systems.
+              </p>
+              <p class="caption">Pharma, biotechnology, genomic medicine, and regulated enterprise workflows.</p>
+            </aside>
+            <div class="signal-diagram signal-diagram--hero" aria-label="LydiaRX venture formation flow from signal to focused vehicle">
+              <div class="signal-diagram__rail"></div>
+              <div class="signal-diagram__grid">
+                <article class="signal-diagram__node">
+                  <span class="signal-diagram__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg>
+                  </span>
+                  <span class="signal-diagram__eyebrow">Signal</span>
+                  <strong class="signal-diagram__title">Asset substrate</strong>
+                  <p class="signal-diagram__summary">Datasets, workflows, infrastructure, and research programmes enter the studio.</p>
+                </article>
+                <article class="signal-diagram__node">
+                  <span class="signal-diagram__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/><path d="M4 12h3M17 12h3M12 4v3M12 17v3"/></svg>
+                  </span>
+                  <span class="signal-diagram__eyebrow">Build</span>
+                  <strong class="signal-diagram__title">Technical maturation</strong>
+                  <p class="signal-diagram__summary">Promising signals are turned into prototypes, evidence packages, and tighter product definitions.</p>
+                </article>
+                <article class="signal-diagram__node">
+                  <span class="signal-diagram__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M5 19h14"/><path d="M7 17V8"/><path d="M12 17V5"/><path d="M17 17v-6"/></svg>
+                  </span>
+                  <span class="signal-diagram__eyebrow">Test</span>
+                  <strong class="signal-diagram__title">Commercial proof</strong>
+                  <p class="signal-diagram__summary">Pilots, partner conversations, and operating constraints sharpen the real route to market.</p>
+                </article>
+                <article class="signal-diagram__node">
+                  <span class="signal-diagram__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M12 4 6 8v8l6 4 6-4V8z"/><path d="M9.5 12.5 11 14l4-4"/></svg>
+                  </span>
+                  <span class="signal-diagram__eyebrow">Launch</span>
+                  <strong class="signal-diagram__title">Focused vehicle</strong>
+                  <p class="signal-diagram__summary">The strongest programmes become partner structures, products, or focused operating vehicles.</p>
+                </article>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       <section class="section">
-        <div class="split-grid">
-          <div>
-            <h2>Research assets converted into venture vehicles.</h2>
-            <p class="section-intro">
-              LydiaRX builds at the intersection of biomedical data, artificial intelligence,
-              scientific automation, and regulated collaboration. The studio develops ventures
-              around governed genomic data, genomic-clinical AI, pharmacogenomics, pharma R&amp;D
-              workbenches, secure omics infrastructure, and enterprise agentic AI.
-            </p>
-            <p class="lead">
-              The focus stays on markets where AI must be traceable, data must be protected, and
-              scientific outputs must be defensible.
-            </p>
-            <div class="button-row">
-              <a class="button secondary" href="venture-studio.html">Venture Studio</a>
-              <a class="button secondary" href="lydiarx-ai-studio.html">AI Studio</a>
-              <a class="button secondary" href="omics-firewall.html">Omics Firewall</a>
-            </div>
+        <article class="content-panel intro-panel">
+          <h2>Research assets converted into venture vehicles.</h2>
+          <p class="section-intro">
+            LydiaRX builds at the intersection of biomedical data, artificial intelligence,
+            scientific automation, and regulated collaboration. The studio develops ventures around
+            governed genomic data, genomic-clinical AI, pharmacogenomics, pharma R&amp;D workbenches,
+            secure omics infrastructure, and enterprise agentic AI.
+          </p>
+          <p class="lead">
+            The focus stays on markets where AI must be traceable, data must be protected, and
+            scientific outputs must be defensible. Venture formation, controlled AI, and governed
+            data are treated as one system rather than three disconnected stories.
+          </p>
+          <div class="button-row">
+            <a class="button secondary" href="venture-studio.html">Venture Studio</a>
+            <a class="button secondary" href="lydiarx-ai-studio.html">AI Studio</a>
+            <a class="button secondary" href="omics-firewall.html">Omics Firewall</a>
           </div>
-          <div class="diagram-panel">
-            <img class="diagram-image" src="assets/diagram-home-pillars.svg" alt="Diagram showing Venture Studio, AI Studio, and Genomic AI converging into LydiaRX and then into venture outcomes." />
-            <p class="caption">
-              LydiaRX links venture formation, controlled AI infrastructure, and governed biomedical
-              data programs into one venture-building model.
-            </p>
-          </div>
+        </article>
+      </section>
+
+      <section class="section">
+        <h2>Six LydiaRX spotlights</h2>
+        <div class="spotlight-grid">
+          <button class="spotlight-card" type="button" data-dialog-open="home-venture-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 8v8l6 4 6-4V8z"/><path d="M9 12h6"/></svg></span>
+
+            <strong class="spotlight-card__title">Venture Studio</strong>
+            <span class="spotlight-card__summary">A formation engine that turns technical assets into focused operating vehicles.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="home-ai-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/><path d="M4 12h3M17 12h3M12 4v3M12 17v3"/></svg></span>
+
+            <strong class="spotlight-card__title">AI Studio</strong>
+            <span class="spotlight-card__summary">Controlled agentic infrastructure for regulated, scientific, and enterprise workflows.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="home-genomic-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4c4 0 8 4 8 8s-4 8-8 8"/><path d="M8 4c-4 0-8 4-8 8s4 8 8 8"/><path d="M6 8h12M6 16h12"/></svg></span>
+
+            <strong class="spotlight-card__title">Genomic AI</strong>
+            <span class="spotlight-card__summary">Research-grade genomic intelligence built on governed clinical and omics data.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="home-firewall-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 7v5c0 5 2.7 7.4 6 8 3.3-.6 6-3 6-8V7z"/><path d="M9 12h6"/></svg></span>
+
+            <strong class="spotlight-card__title">Omics Firewall</strong>
+            <span class="spotlight-card__summary">Compute-to-data and governed output control for sensitive biomedical environments.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="home-pharma-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10"/><path d="M9 4v6l-3 5a3 3 0 0 0 2.6 5h6.8A3 3 0 0 0 18 15l-3-5V4"/></svg></span>
+
+            <strong class="spotlight-card__title">Pharma R&amp;D workbenches</strong>
+            <span class="spotlight-card__summary">Multi-agent and simulation-rich systems for study design, dose, and evidence questions.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="home-research-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3h6l4 4v14H8z"/><path d="M14 3v5h5"/><path d="M10 13h6M10 17h6"/></svg></span>
+
+            <strong class="spotlight-card__title">Research directions</strong>
+            <span class="spotlight-card__summary">Public articles and position papers that explain the logic behind the stack.</span>
+
+          </button>
         </div>
+
+        <dialog class="spotlight-dialog" id="home-venture-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 8v8l6 4 6-4V8z"/><path d="M9 12h6"/></svg></span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Formation</span>
+                <h3 class="spotlight-dialog__title">Venture Studio</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>LydiaRX uses a venture-studio model to identify technical assets with real signal, mature them into tighter operating propositions, and then structure the right commercial vehicle around them.</p>
+              <p>The studio logic connects scientific, infrastructural, and partner-facing assets rather than treating venture formation as a branding exercise.</p>
+            </div>
+            <div class="spotlight-dialog__actions"><a class="button secondary" href="venture-studio.html">Open Venture Studio</a></div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="home-ai-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/><path d="M4 12h3M17 12h3M12 4v3M12 17v3"/></svg></span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Control</span>
+                <h3 class="spotlight-dialog__title">AI Studio</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>AI Studio turns model access into governed workflow execution by combining agentic harnesses, tool access, validation gates, traceability, and human review.</p>
+              <p>It is built for research, regulated enterprise work, and environments where AI must be inspectable rather than merely fluent.</p>
+            </div>
+            <div class="spotlight-dialog__actions"><a class="button secondary" href="lydiarx-ai-studio.html">Open AI Studio</a></div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="home-genomic-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4c4 0 8 4 8 8s-4 8-8 8"/><path d="M8 4c-4 0-8 4-8 8s4 8 8 8"/><path d="M6 8h12M6 16h12"/></svg></span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Data intelligence</span>
+                <h3 class="spotlight-dialog__title">Genomic AI</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>Genomic AI is where LydiaRX connects governed omics and clinical data to cohort reasoning, pharmacogenomics, biomarker exploration, and disease-area analysis.</p>
+              <p>The aim is research-grade value first, with stronger operating and evidence foundations before any higher-stakes claims are made.</p>
+            </div>
+            <div class="spotlight-dialog__actions"><a class="button secondary" href="genomic-ai.html">Open Genomic AI</a></div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="home-firewall-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 7v5c0 5 2.7 7.4 6 8 3.3-.6 6-3 6-8V7z"/><path d="M9 12h6"/></svg></span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Custody</span>
+                <h3 class="spotlight-dialog__title">Omics Firewall</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>Omics Firewall is the governed boundary between sensitive biomedical data and the workflows, models, and outputs that need to operate around it.</p>
+              <p>It is how LydiaRX keeps data usable without turning custody, policy, and auditability into afterthoughts.</p>
+            </div>
+            <div class="spotlight-dialog__actions"><a class="button secondary" href="omics-firewall.html">Open Omics Firewall</a></div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="home-pharma-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10"/><path d="M9 4v6l-3 5a3 3 0 0 0 2.6 5h6.8A3 3 0 0 0 18 15l-3-5V4"/></svg></span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">R&amp;D</span>
+                <h3 class="spotlight-dialog__title">Pharma R&amp;D workbenches</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>The workbench direction focuses on dose, titration, simulation, patient heterogeneity, evidence synthesis, and other structured analytical tasks where multiple agents and explicit checks can add value.</p>
+              <p>It shows how LydiaRX's infrastructure becomes concrete inside a commercially meaningful scientific workflow.</p>
+            </div>
+            <div class="spotlight-dialog__actions"><a class="button secondary" href="pharma-rd-workbenches.html">Open workbenches</a></div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="home-research-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3h6l4 4v14H8z"/><path d="M14 3v5h5"/><path d="M10 13h6M10 17h6"/></svg></span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Context</span>
+                <h3 class="spotlight-dialog__title">Research directions</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>The public research set explains why LydiaRX is interested in structured scientific automation, System 2 governance, sovereign genomic infrastructure, neuro-symbolic genomics, and model-informed R&amp;D.</p>
+              <p>These articles are there to make the operating logic legible, not to act as detached thought pieces.</p>
+            </div>
+            <div class="spotlight-dialog__actions"><a class="button secondary" href="research.html">Open Research</a></div>
+          </article>
+        </dialog>
       </section>
 
       <section class="section">

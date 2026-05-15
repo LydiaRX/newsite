@@ -10,26 +10,43 @@
     />
     <script>
       (() => {
-        const storageKey = 'lydiarx-theme';
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
         const params = new URLSearchParams(window.location.search);
         const requestedTheme = params.get('theme');
-        let theme = 'default';
+        let theme = DEFAULT_THEME;
 
         try {
-          if (requestedTheme === 'fusion') {
-            localStorage.setItem(storageKey, 'fusion');
-            theme = 'fusion';
-          } else if (requestedTheme === 'default') {
-            localStorage.removeItem(storageKey);
-          } else if (localStorage.getItem(storageKey) === 'fusion') {
-            theme = 'fusion';
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
           }
         } catch (error) {
-          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
         }
 
         document.documentElement.dataset.theme = theme;
-        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+        // Must run before the Mermaid module below so diagrams use the correct palette on first paint.
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
       })();
     </script>
     <link rel="stylesheet" href="styles.css" />
@@ -56,80 +73,281 @@
       </section>
 
       <section class="section">
-        <div class="split-grid">
-          <div>
-            <h2>From AI access to controlled AI workflows</h2>
-            <p class="section-intro">
-              LydiaRX AI Studio is an enterprise platform for controlled agentic workflows. It is
-              designed for organisations that need more than a chatbot, a generic copilot, or
-              isolated access to large language models.
-            </p>
-            <p class="lead">
-              The platform supports agentic harnesses in which models interact with tools,
-              documents, datasets, APIs, memory, validation steps, governance policies, and human
-              review inside explicit execution boundaries.
-            </p>
+        <article class="content-panel intro-panel">
+          <h2>From AI access to controlled AI workflows</h2>
+          <p class="section-intro">
+            LydiaRX AI Studio is an enterprise platform for controlled agentic workflows. It is
+            designed for organisations that need more than a chatbot, a generic copilot, or
+            isolated access to large language models.
+          </p>
+          <p class="lead">
+            The platform uses agentic harnesses in which models interact with tools, documents,
+            APIs, datasets, memory, validation gates, policy controls, and human review inside
+            explicit execution boundaries. The goal is not only productivity, but trustworthy
+            workflow execution.
+          </p>
+          <div class="signal-diagram" aria-label="AI Studio flow from access to controlled outputs">
+            <div class="signal-diagram__rail"></div>
+            <div class="signal-diagram__grid">
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0v3H6z"/><path d="M8 18h8"/><path d="M12 11v7"/></svg>
+                </span>
+                <span class="signal-diagram__eyebrow">Access</span>
+                <strong class="signal-diagram__title">Model entry</strong>
+                <p class="signal-diagram__summary">Private and external models are routed into a governed execution layer.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M8 6v12"/><path d="M16 8v8"/></svg>
+                </span>
+                <span class="signal-diagram__eyebrow">Harness</span>
+                <strong class="signal-diagram__title">Tool integration</strong>
+                <p class="signal-diagram__summary">Tools, memory, documents, and APIs are invoked under controlled orchestration.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M12 3v6"/><path d="m8 7 4 4 4-4"/><path d="M5 15h14"/></svg>
+                </span>
+                <span class="signal-diagram__eyebrow">Control</span>
+                <strong class="signal-diagram__title">Validation gates</strong>
+                <p class="signal-diagram__summary">Policies, tests, traces, and budget controls decide what is accepted.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M12 4 6 8v8l6 4 6-4V8z"/><path d="M9 12h6"/></svg>
+                </span>
+                <span class="signal-diagram__eyebrow">Output</span>
+                <strong class="signal-diagram__title">Human-approved workflows</strong>
+                <p class="signal-diagram__summary">The result is an inspectable workflow rather than an ungoverned model response.</p>
+              </article>
+            </div>
           </div>
-          <div class="diagram-panel">
-            <img class="diagram-image" src="assets/diagram-ai-studio-workflow.svg" alt="Diagram showing LydiaRX AI Studio orchestrating models, tools, and review into trusted outputs." />
-          </div>
-        </div>
+        </article>
       </section>
 
       <section class="section">
-        <h2>Core capabilities</h2>
-        <div class="card-grid">
-          <article class="card">
-            <h3>Agentic workflow execution</h3>
-            <p>Models, tools, documents, data, and validation steps work together inside explicit control boundaries.</p>
-          </article>
-          <article class="card">
-            <h3>Research automation</h3>
-            <p>Repetitive scientific and technical work is accelerated without losing traceability or review.</p>
-          </article>
-          <article class="card">
-            <h3>Regulated documentation</h3>
-            <p>Technical and scientific documents can be generated, compared, reviewed, and maintained more systematically.</p>
-          </article>
-          <article class="card">
-            <h3>Private deployment</h3>
-            <p>Controlled model routing, access management, audit logging, and enterprise data protection remain built in.</p>
-          </article>
-          <article class="card">
-            <h3>Model governance</h3>
-            <p>Usage budgets, execution traces, evaluations, and evidence of execution stay inspectable.</p>
-          </article>
-          <article class="card">
-            <h3>Human review</h3>
-            <p>Critical scientific, regulatory, and commercial decisions remain under accountable human supervision.</p>
-          </article>
-        </div>
-      </section>
+        <h2>Six AI Studio spotlights</h2>
+        <div class="spotlight-grid">
+          <button class="spotlight-card" type="button" data-dialog-open="studio-harness-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/><path d="M4 12h3M17 12h3M12 4v3M12 17v3"/></svg>
+            </span>
 
-      <section class="section">
-        <h2>Use cases</h2>
-        <div class="card-grid">
-          <article class="card">
-            <h3>Pharma R&amp;D</h3>
-            <p>Evidence synthesis, protocol support, literature review, technical reporting, and data-analysis orchestration.</p>
-          </article>
-          <article class="card">
-            <h3>Biotechnology</h3>
-            <p>Research workbenches, model-informed analysis, cohort reasoning, and experiment planning.</p>
-          </article>
-          <article class="card">
-            <h3>Software engineering</h3>
-            <p>AI-assisted coding, testing, documentation, architecture review, and workflow automation.</p>
-          </article>
-          <article class="card">
-            <h3>Regulated enterprise</h3>
-            <p>Private model use, audit trails, controlled document generation, and secure knowledge work.</p>
-          </article>
-          <article class="card">
-            <h3>Genomic AI</h3>
-            <p>Metadata validation, cohort workflows, AI-assisted reporting, and governed research collaboration.</p>
-          </article>
+            <strong class="spotlight-card__title">Agentic harnesses</strong>
+            <span class="spotlight-card__summary">Models, tools, documents, memory, and data operate inside explicit control boundaries.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="studio-research-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M5 19h14"/><path d="M7 17V8"/><path d="M12 17V5"/><path d="M17 17v-6"/></svg>
+            </span>
+
+            <strong class="spotlight-card__title">Scientific automation</strong>
+            <span class="spotlight-card__summary">Repetitive research and technical work can be accelerated without losing review and traceability.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="studio-docs-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M8 3h6l4 4v14H8z"/><path d="M14 3v5h5"/><path d="M10 13h6M10 17h6"/></svg>
+            </span>
+
+            <strong class="spotlight-card__title">Regulated documentation</strong>
+            <span class="spotlight-card__summary">Documents can be generated, compared, reviewed, and maintained under stronger controls.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="studio-private-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M6 10V8a6 6 0 0 1 12 0v2"/><path d="M5 10h14v10H5z"/><path d="M12 14v2"/></svg>
+            </span>
+
+            <strong class="spotlight-card__title">Private deployment</strong>
+            <span class="spotlight-card__summary">Controlled routing, access management, and enterprise data protection remain built in.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="studio-governance-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 4 6 7v5c0 5 2.7 7.4 6 8 3.3-.6 6-3 6-8V7z"/><path d="m9.5 12 1.5 1.5 3.5-3.5"/></svg>
+            </span>
+
+            <strong class="spotlight-card__title">Evaluation and review</strong>
+            <span class="spotlight-card__summary">Usage budgets, traces, evaluations, and accountable human review stay first class.</span>
+
+          </button>
+          <button class="spotlight-card" type="button" data-dialog-open="studio-domains-dialog">
+            <span class="spotlight-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 6h7v7H4z"/><path d="M13 6h7v5h-7z"/><path d="M13 13h7v5h-7z"/><path d="M4 15h7v3H4z"/></svg>
+            </span>
+
+            <strong class="spotlight-card__title">Domain use cases</strong>
+            <span class="spotlight-card__summary">Pharma, biotechnology, software engineering, regulated enterprise, and genomic AI workflows.</span>
+
+          </button>
         </div>
+
+        <dialog class="spotlight-dialog" id="studio-harness-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/><path d="M4 12h3M17 12h3M12 4v3M12 17v3"/></svg>
+              </span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Execution</span>
+                <h3 class="spotlight-dialog__title">Agentic harnesses</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>
+                LydiaRX AI Studio is built around harnesses, not isolated prompts. A harness defines
+                how models call tools, inspect data, use memory, interact with documents, and pass
+                through explicit checks before their output is trusted.
+              </p>
+              <p>
+                This turns model access into a workflow substrate. The result is a system that can
+                be reasoned about, inspected, and improved over time instead of a collection of
+                loosely governed chat interactions.
+              </p>
+            </div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="studio-research-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5 19h14"/><path d="M7 17V8"/><path d="M12 17V5"/><path d="M17 17v-6"/></svg>
+              </span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Research</span>
+                <h3 class="spotlight-dialog__title">Scientific automation</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>
+                AI Studio supports evidence synthesis, literature mapping, technical reporting,
+                code-assisted analysis, workflow regeneration, and other repetitive research tasks
+                without collapsing validation into generation.
+              </p>
+              <p>
+                This is particularly important in scientific and biomedical settings, where the
+                higher-value problem is rarely raw drafting speed. It is whether the workflow
+                preserves traceability, review, and the boundaries of what the evidence supports.
+              </p>
+              <p class="spotlight-dialog__references">Related direction: research automation and System 2 governance.</p>
+            </div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="studio-docs-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M8 3h6l4 4v14H8z"/><path d="M14 3v5h5"/><path d="M10 13h6M10 17h6"/></svg>
+              </span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Documentation</span>
+                <h3 class="spotlight-dialog__title">Regulated documentation</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>
+                Regulated and scientific documentation is often slow because it requires comparison,
+                consistency, citation discipline, change tracking, and human sign-off. AI Studio
+                helps with those operations while keeping the review boundary explicit.
+              </p>
+              <p>
+                This makes the platform useful for protocol support, technical dossiers, scientific
+                reporting, quality-controlled draft generation, and other documentation-heavy
+                workflows that cannot rely on untracked generation alone.
+              </p>
+            </div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="studio-private-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M6 10V8a6 6 0 0 1 12 0v2"/><path d="M5 10h14v10H5z"/><path d="M12 14v2"/></svg>
+              </span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Deployment</span>
+                <h3 class="spotlight-dialog__title">Private deployment</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>
+                AI Studio is designed for organisations that need control over where models run,
+                which datasets they can touch, how outputs are logged, and which policies decide
+                what is allowed to leave the environment.
+              </p>
+              <p>
+                That makes the platform relevant to private enterprise deployments, sensitive data
+                environments, and scientific programmes where portability, compliance, or data
+                governance are not optional details.
+              </p>
+            </div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="studio-governance-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 4 6 7v5c0 5 2.7 7.4 6 8 3.3-.6 6-3 6-8V7z"/><path d="m9.5 12 1.5 1.5 3.5-3.5"/></svg>
+              </span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Governance</span>
+                <h3 class="spotlight-dialog__title">Evaluation and review</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>
+                Usage budgets, execution traces, model evaluations, approval steps, and human review
+                are all part of the platform logic. LydiaRX treats these as native system features,
+                not as a compliance layer bolted on after deployment.
+              </p>
+              <p>
+                That matters most when AI is used inside scientific, commercial, or operational
+                workflows where decisions must remain explainable and accountable long after the
+                initial interaction.
+              </p>
+            </div>
+          </article>
+        </dialog>
+
+        <dialog class="spotlight-dialog" id="studio-domains-dialog" data-spotlight-dialog>
+          <article class="spotlight-dialog__panel">
+            <div class="spotlight-dialog__header">
+              <span class="spotlight-dialog__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 6h7v7H4z"/><path d="M13 6h7v5h-7z"/><path d="M13 13h7v5h-7z"/><path d="M4 15h7v3H4z"/></svg>
+              </span>
+              <div class="spotlight-dialog__heading">
+                <span class="spotlight-dialog__eyebrow">Domains</span>
+                <h3 class="spotlight-dialog__title">Domain use cases</h3>
+              </div>
+              <button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button>
+            </div>
+            <div class="spotlight-dialog__body">
+              <p>
+                The same control substrate can support pharma R&amp;D, biotechnology analysis,
+                software engineering, regulated enterprise documentation, and governed genomic AI
+                workflows. What changes is the harness, the validation layer, and the surrounding
+                governance requirements.
+              </p>
+              <p>
+                AI Studio therefore behaves less like a single-purpose assistant and more like a
+                configurable operating environment for domain-specific AI work.
+              </p>
+              <p class="spotlight-dialog__references">Related pages: Pharma R&amp;D Workbenches, Genomic AI, and Omics Firewall.</p>
+            </div>
+          </article>
+        </dialog>
       </section>
 
       <section class="section">

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Genomic AI venture formation at LydiaRX - LydiaRX AG</title>
+    <meta
+      name="description"
+      content="A LydiaRX research note on how governed genomic data, AI infrastructure, and venture creation fit into one strategic model."
+    />
+    <script>
+      (() => {
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
+        const params = new URLSearchParams(window.location.search);
+        const requestedTheme = params.get('theme');
+        let theme = DEFAULT_THEME;
+
+        try {
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
+          }
+        } catch (error) {
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
+        }
+
+        document.documentElement.dataset.theme = theme;
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: window.__mermaidTheme || 'neutral' });
+    </script>
+    <script type="module" src="partials-loader.js"></script>
+  </head>
+  <body data-page="research">
+    <div data-include="partials/site-header.html"></div>
+    <main class="page-shell">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a> / <a href="research.html">Research</a> / Genomic AI venture formation
+      </nav>
+
+      <section class="page-hero">
+        <p class="eyebrow">Research article</p>
+        <h1>Genomic AI venture formation at LydiaRX</h1>
+        <p class="hero-subtitle">
+          LydiaRX's venture logic is built around the convergence of governed genomic assets,
+          traceable AI infrastructure, and domain-specific research programmes that can mature into
+          distinct companies or products.
+        </p>
+        <p class="hero-text">
+          The strategic claim is not that every AI feature becomes a venture. It is that when
+          governed data, serious infrastructure, and domain-specific workflows reinforce one
+          another, they create a more durable path to venture formation than software abstractions
+          alone.
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="content-panel article-layout">
+          <p>
+            LydiaRX's venture thesis is built on the idea that defensible companies are more likely
+            to emerge from governed assets and operating systems than from generic AI features alone.
+            In healthcare and genomics, data custody, provenance, execution control, and domain
+            workflow design directly shape what products can exist, how fast they can mature, and
+            whether they remain defensible once others notice the opportunity. The venture question
+            is therefore inseparable from the infrastructure question.
+          </p>
+          <p>
+            This is why Omics Firewall, LydiaRX AI Studio, and the domain research programmes belong
+            in one strategic picture. Omics Firewall provides the governed substrate for sensitive
+            data. AI Studio provides the controlled environment for agentic execution, review, and
+            repeatable workflow design. Domain programmes such as
+            <a href="research-neuro-symbolic-genomics.html">neuro-symbolic genomics</a> and the
+            <a href="research-dose-titration-workbench.html">dose and titration workbench</a> are
+            where the stack proves whether it can create better analytical assets, better partner
+            conversations, and eventually more focused operating vehicles.
+          </p>
+          <p>
+            The model is deliberately disciplined. LydiaRX is not claiming that every AI-enabled
+            workflow should become a company. The stronger claim is that when governed data, serious
+            control layers, and high-value domain workflows reinforce one another, they create a more
+            durable route to venture creation than software abstraction by itself. That is why the
+            public site presents the venture thesis as a connected set of technical arguments rather
+            than a disconnected list of products.
+          </p>
+          <p>
+            Comparable market signals support this framing without dictating it. The emergence of
+            publicly valued data-and-AI platforms, the strategic interest in AI-enabled drug
+            discovery, and the continued relevance of differentiated biological data all point in the
+            same direction: value accrues where infrastructure, evidence, and execution meet. LydiaRX
+            aims to build at that intersection, using venture formation as the commercial outcome of
+            a coherent technical stack rather than as a marketing layer placed on top of it.
+          </p>
+          <h2>Bibliography</h2>
+          <ul class="article-reference-list">
+            <li><a href="https://www.tempus.com/news/tempus-announces-pricing-of-initial-public-offering/">Tempus AI, IPO pricing announcement.</a></li>
+            <li><a href="research-omics-firewall-architecture.html">LydiaRX, “Omics Firewall and sovereign genomic infrastructure.”</a></li>
+            <li><a href="research-neuro-symbolic-genomics.html">LydiaRX, “Neuro-symbolic genomics.”</a></li>
+            <li><a href="https://www.nist.gov/itl/ai-risk-management-framework">NIST, Artificial Intelligence Risk Management Framework.</a></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <div data-include="partials/site-footer.html"></div>
+  </body>
+</html>

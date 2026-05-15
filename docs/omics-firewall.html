@@ -10,26 +10,43 @@
     />
     <script>
       (() => {
-        const storageKey = 'lydiarx-theme';
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
         const params = new URLSearchParams(window.location.search);
         const requestedTheme = params.get('theme');
-        let theme = 'default';
+        let theme = DEFAULT_THEME;
 
         try {
-          if (requestedTheme === 'fusion') {
-            localStorage.setItem(storageKey, 'fusion');
-            theme = 'fusion';
-          } else if (requestedTheme === 'default') {
-            localStorage.removeItem(storageKey);
-          } else if (localStorage.getItem(storageKey) === 'fusion') {
-            theme = 'fusion';
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
           }
         } catch (error) {
-          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
         }
 
         document.documentElement.dataset.theme = theme;
-        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+        // Must run before the Mermaid module below so diagrams use the correct palette on first paint.
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
       })();
     </script>
     <link rel="stylesheet" href="styles.css" />
@@ -55,73 +72,67 @@
       </section>
 
       <section class="section">
-        <div class="split-grid">
-          <div>
-            <h2>Boundary layer for governed biomedical collaboration</h2>
-            <p class="section-intro">
-              Omics Firewall acts as the boundary layer between raw biomedical data and research, AI
-              training, pharma collaboration, model development, and controlled output release.
-            </p>
-            <p class="lead">
-              It governs who can access which data views, what computations are permitted, which
-              models may be trained, what outputs may leave the environment, and under which approvals.
-            </p>
+        <article class="content-panel intro-panel">
+          <h2>Boundary layer for governed biomedical collaboration</h2>
+          <p class="section-intro">
+            Omics Firewall acts as the boundary layer between raw biomedical data and research, AI
+            training, pharma collaboration, model development, and controlled output release.
+          </p>
+          <p class="lead">
+            It governs who can access which data views, what computations are permitted, which
+            models may be trained, what outputs may leave the environment, and under which
+            approvals. The point is to make sensitive biomedical data usable without turning control
+            into a manual bottleneck.
+          </p>
+          <div class="signal-diagram" aria-label="Omics Firewall flow from governed requests to approved outputs">
+            <div class="signal-diagram__rail"></div>
+            <div class="signal-diagram__grid">
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="m13 6 6 6-6 6"/><path d="M5 6v12"/></svg></span>
+                <span class="signal-diagram__eyebrow">Request</span>
+                <strong class="signal-diagram__title">Partner demand</strong>
+                <p class="signal-diagram__summary">Researchers, partners, and systems request governed views or computations.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 7v5c0 5 2.7 7.4 6 8 3.3-.6 6-3 6-8V7z"/><path d="M9 12h6"/></svg></span>
+                <span class="signal-diagram__eyebrow">Policy</span>
+                <strong class="signal-diagram__title">Firewall controls</strong>
+                <p class="signal-diagram__summary">Consent, access policy, computation rules, and export restrictions shape the execution path.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/><path d="M4 12h3M17 12h3M12 4v3M12 17v3"/></svg></span>
+                <span class="signal-diagram__eyebrow">Compute</span>
+                <strong class="signal-diagram__title">Controlled analysis</strong>
+                <p class="signal-diagram__summary">Models and workflows run inside approved workspaces instead of exporting raw sensitive assets.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3h6l4 4v14H8z"/><path d="M14 3v5h5"/><path d="M10 13h6"/></svg></span>
+                <span class="signal-diagram__eyebrow">Release</span>
+                <strong class="signal-diagram__title">Approved outputs</strong>
+                <p class="signal-diagram__summary">Reports, aggregates, and partner deliverables leave only through explicit outbound controls.</p>
+              </article>
+            </div>
           </div>
-          <div class="diagram-panel">
-            <img class="diagram-image" src="assets/diagram-omics-flow.svg" alt="Diagram showing partner requests passing through Omics Firewall into approved biomedical outputs." />
-          </div>
-        </div>
+        </article>
       </section>
 
       <section class="section">
-        <h2>Core functions</h2>
-        <div class="card-grid">
-          <article class="card">
-            <h3>Governed access</h3>
-            <p>Control which users, institutions, partners, and systems can see specific data views.</p>
-          </article>
-          <article class="card">
-            <h3>Compute-to-data</h3>
-            <p>Allow approved analysis inside controlled environments without uncontrolled raw-data export.</p>
-          </article>
-          <article class="card">
-            <h3>Consent-aware use</h3>
-            <p>Map data access and computation to consent, licence, jurisdictional, and institutional conditions.</p>
-          </article>
-          <article class="card">
-            <h3>Provenance and lineage</h3>
-            <p>Track datasets, transformations, model training, outputs, approvals, and release decisions.</p>
-          </article>
-          <article class="card">
-            <h3>Model governance</h3>
-            <p>Control model training, evaluation, release, partner workspaces, and downstream use.</p>
-          </article>
-          <article class="card">
-            <h3>Output control</h3>
-            <p>Review and approve outbound reports, aggregates, biomarkers, and other deliverables.</p>
-          </article>
+        <h2>Six Omics Firewall spotlights</h2>
+        <div class="spotlight-grid">
+          <button class="spotlight-card" type="button" data-dialog-open="firewall-access-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 7v5c0 5 2.7 7.4 6 8 3.3-.6 6-3 6-8V7z"/><path d="M9 12h6"/></svg></span><strong class="spotlight-card__title">Governed access</strong><span class="spotlight-card__summary">Control which users, institutions, partners, and systems can see specific data views.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="firewall-compute-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/><path d="M4 12h3M17 12h3M12 4v3M12 17v3"/></svg></span><strong class="spotlight-card__title">Compute-to-data</strong><span class="spotlight-card__summary">Approved computation happens inside controlled environments instead of raw export.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="firewall-consent-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19h14"/><path d="M7 17V8"/><path d="M12 17V5"/><path d="M17 17v-6"/></svg></span><strong class="spotlight-card__title">Consent-aware policy</strong><span class="spotlight-card__summary">Usage rules map to consent, licence, jurisdictional, and institutional conditions.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="firewall-lineage-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6h14"/><path d="M5 12h9"/><path d="M5 18h14"/><path d="M18 10v4"/><path d="M14 16h8"/></svg></span><strong class="spotlight-card__title">Provenance and lineage</strong><span class="spotlight-card__summary">Track datasets, transformations, model training, approvals, and release decisions.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="firewall-model-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 10V8a6 6 0 0 1 12 0v2"/><path d="M5 10h14v10H5z"/><path d="M12 14v2"/></svg></span><strong class="spotlight-card__title">Model governance</strong><span class="spotlight-card__summary">Training, evaluation, release, and downstream use stay under explicit control.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="firewall-output-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="m13 6 6 6-6 6"/><path d="M5 6v12"/></svg></span><strong class="spotlight-card__title">Output control</strong><span class="spotlight-card__summary">Outbound reports, biomarkers, and partner deliverables pass through approval gates.</span></button>
         </div>
-      </section>
 
-      <section class="section">
-        <div class="detail-grid">
-          <article class="callout">
-            <h2>Secure collaboration beyond omics.</h2>
-            <p>
-              The same architectural principles apply to regulated supply chains, pharmaceutical data
-              exchange, product provenance, controlled manufacturing documentation, and sensitive
-              commercial collaboration.
-            </p>
-          </article>
-          <article class="callout">
-            <h2>AI-assisted, human-approved governance.</h2>
-            <p>
-              AI agents can support proposal classification, metadata normalisation, compliance
-              checklist generation, audit package preparation, suspicious export detection, and
-              cohort-query assistance while sensitive approvals remain human-owned.
-            </p>
-          </article>
-        </div>
+        <dialog class="spotlight-dialog" id="firewall-access-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 7v5c0 5 2.7 7.4 6 8 3.3-.6 6-3 6-8V7z"/><path d="M9 12h6"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Access</span><h3 class="spotlight-dialog__title">Governed access</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Governed access is the first promise of Omics Firewall: the system decides which data views, workspaces, and analytical routes are visible to each actor.</p><p>This is what lets biomedical collaboration scale without collapsing into ad hoc file sharing or uncontrolled local copies.</p></div></article></dialog>
+        <dialog class="spotlight-dialog" id="firewall-compute-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/><path d="M4 12h3M17 12h3M12 4v3M12 17v3"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Execution</span><h3 class="spotlight-dialog__title">Compute-to-data</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Instead of moving raw biomedical data outward, Omics Firewall moves approved computation inward. Models and analyses run inside governed environments where access, logging, and export rules remain intact.</p><p>This is one of the key architectural moves that makes sensitive data usable without making it casually portable.</p></div></article></dialog>
+        <dialog class="spotlight-dialog" id="firewall-consent-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19h14"/><path d="M7 17V8"/><path d="M12 17V5"/><path d="M17 17v-6"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Policy</span><h3 class="spotlight-dialog__title">Consent-aware policy</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Consent, licence terms, jurisdiction, and institutional conditions are not side notes. They are first-class constraints that shape what analysis is allowed and which outputs can legitimately be produced.</p><p>Omics Firewall is valuable precisely because it can keep those constraints attached to the workflow.</p></div></article></dialog>
+        <dialog class="spotlight-dialog" id="firewall-lineage-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6h14"/><path d="M5 12h9"/><path d="M5 18h14"/><path d="M18 10v4"/><path d="M14 16h8"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Lineage</span><h3 class="spotlight-dialog__title">Provenance and lineage</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Datasets, transformations, models, approvals, and releases all need durable lineage if a sensitive environment is to remain trustworthy over time.</p><p>That lineage is also what makes the system commercially usable: partners can see what was done, how, and under which controls.</p></div></article></dialog>
+        <dialog class="spotlight-dialog" id="firewall-model-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 10V8a6 6 0 0 1 12 0v2"/><path d="M5 10h14v10H5z"/><path d="M12 14v2"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">AI control</span><h3 class="spotlight-dialog__title">Model governance</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Omics Firewall does not stop at human access. It also governs which models may be trained, evaluated, released, or used inside partner workspaces and which forms of downstream use remain acceptable.</p><p>This is where data custody and AI governance become one operating layer.</p></div></article></dialog>
+        <dialog class="spotlight-dialog" id="firewall-output-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="m13 6 6 6-6 6"/><path d="M5 6v12"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Release</span><h3 class="spotlight-dialog__title">Output control</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Outbound reports, aggregates, biomarkers, model artefacts, and other deliverables should only leave through explicit approval paths. That is what keeps collaboration possible without losing strategic or ethical control.</p><p>The same logic extends beyond omics into other regulated supply, manufacturing, and evidence workflows.</p></div></article></dialog>
       </section>
 
       <section class="section">

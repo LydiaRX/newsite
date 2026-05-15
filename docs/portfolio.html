@@ -10,26 +10,43 @@
     />
     <script>
       (() => {
-        const storageKey = 'lydiarx-theme';
+        const DEFAULT_THEME = 'default';
+        const FUSION_THEME = 'fusion';
+        const INSPIRATION_THEME = 'inspiration';
+        const REVIEW_THEMES = new Set([FUSION_THEME, INSPIRATION_THEME]);
+        const THEME_STORAGE_KEY = 'lydiarx-theme';
+        const DEV_MODE_STORAGE_KEY = 'lydiarx-dev-mode';
+        const DEFAULT_DEV_MODE = true;
         const params = new URLSearchParams(window.location.search);
         const requestedTheme = params.get('theme');
-        let theme = 'default';
+        let theme = DEFAULT_THEME;
 
         try {
-          if (requestedTheme === 'fusion') {
-            localStorage.setItem(storageKey, 'fusion');
-            theme = 'fusion';
-          } else if (requestedTheme === 'default') {
-            localStorage.removeItem(storageKey);
-          } else if (localStorage.getItem(storageKey) === 'fusion') {
-            theme = 'fusion';
+          const storedDevMode = localStorage.getItem(DEV_MODE_STORAGE_KEY);
+          const hasDevMode =
+            storedDevMode === 'true' ||
+            (storedDevMode !== 'false' && DEFAULT_DEV_MODE);
+
+          if (requestedTheme && REVIEW_THEMES.has(requestedTheme) && hasDevMode) {
+            localStorage.setItem(THEME_STORAGE_KEY, requestedTheme);
+            theme = requestedTheme;
+          } else if (requestedTheme === DEFAULT_THEME) {
+            localStorage.removeItem(THEME_STORAGE_KEY);
+          } else {
+            const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            if (hasDevMode && REVIEW_THEMES.has(storedTheme)) {
+              theme = storedTheme;
+            } else if (!hasDevMode) {
+              localStorage.removeItem(THEME_STORAGE_KEY);
+            }
           }
         } catch (error) {
-          theme = requestedTheme === 'fusion' ? 'fusion' : 'default';
+          theme = requestedTheme && REVIEW_THEMES.has(requestedTheme) ? requestedTheme : DEFAULT_THEME;
         }
 
         document.documentElement.dataset.theme = theme;
-        window.__mermaidTheme = theme === 'fusion' ? 'dark' : 'neutral';
+        // Must run before the Mermaid module below so diagrams use the correct palette on first paint.
+        window.__mermaidTheme = theme === FUSION_THEME ? 'dark' : 'neutral';
       })();
     </script>
     <link rel="stylesheet" href="styles.css" />
@@ -55,37 +72,61 @@
       </section>
 
       <section class="section">
-        <h2>Strategic venture categories</h2>
-        <p class="section-intro">
-          LydiaRX’s portfolio is organised around venture categories that can become a spin-off,
-          product line, licensing vehicle, joint venture, or partner-funded development programme.
-        </p>
-        <div class="card-grid">
-          <article class="card">
-            <h3>LydiaRX AI Studio</h3>
-            <p>Enterprise agentic AI infrastructure for automated R&amp;D and regulated workflows.</p>
-          </article>
-          <article class="card">
-            <h3>Genomic AI ventures</h3>
-            <p>Research-grade genomic-clinical AI, pharmacogenomics, disease-area analytics, and model assets.</p>
-          </article>
-          <article class="card">
-            <h3>Omics Firewall</h3>
-            <p>Secure access, compute-to-data, provenance, auditability, model governance, and controlled output release.</p>
-          </article>
-          <article class="card">
-            <h3>Pharma R&amp;D Workbenches</h3>
-            <p>Analytical environments for dose optimisation, titration, safety, adherence, patient stratification, and study design.</p>
-          </article>
-          <article class="card">
-            <h3>Supply-chain infrastructure</h3>
-            <p>Provenance, controlled sharing, auditability, and blockchain-informed collaboration for regulated supply chains.</p>
-          </article>
-          <article class="card">
-            <h3>Disease-area ventures</h3>
-            <p>Focused platforms around oncology, cardiometabolic disease, rare disease, infectious disease, or other selected domains.</p>
-          </article>
+        <article class="content-panel intro-panel">
+          <h2>Strategic venture categories</h2>
+          <p class="section-intro">
+            LydiaRX’s portfolio is organised around venture categories that can become a spin-off,
+            product line, licensing vehicle, joint venture, or partner-funded development
+            programme.
+          </p>
+          <p class="lead">
+            The portfolio is not a flat list of ideas. It is a set of categories where governed
+            data, controlled AI, secure infrastructure, and domain-specific research can compound
+            into focused operating assets over time.
+          </p>
+          <div class="signal-diagram" aria-label="Portfolio flow from shared platforms to venture categories">
+            <div class="signal-diagram__rail"></div>
+            <div class="signal-diagram__grid">
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></span>
+                <span class="signal-diagram__eyebrow">Shared base</span>
+                <strong class="signal-diagram__title">Common stack</strong>
+                <p class="signal-diagram__summary">AI Studio, data governance, and research infrastructure form the reusable platform base.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h7v12H4z"/><path d="M13 6h7v5h-7z"/><path d="M13 13h7v5h-7z"/></svg></span>
+                <span class="signal-diagram__eyebrow">Expansion</span>
+                <strong class="signal-diagram__title">Category branches</strong>
+                <p class="signal-diagram__summary">The stack branches into AI, genomics, infrastructure, R&amp;D, and disease-focused venture routes.</p>
+              </article>
+              <article class="signal-diagram__node">
+                <span class="signal-diagram__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 8v8l6 4 6-4V8z"/><path d="M9.5 12.5 11 14l4-4"/></svg></span>
+                <span class="signal-diagram__eyebrow">Outcome</span>
+                <strong class="signal-diagram__title">Venture vehicles</strong>
+                <p class="signal-diagram__summary">Each category can mature into a focused company, licensing route, or partner-funded vehicle.</p>
+              </article>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="section">
+        <h2>Six portfolio spotlights</h2>
+        <div class="spotlight-grid">
+          <button class="spotlight-card" type="button" data-dialog-open="portfolio-ai-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/><path d="M4 12h3M17 12h3M12 4v3M12 17v3"/></svg></span><strong class="spotlight-card__title">LydiaRX AI Studio</strong><span class="spotlight-card__summary">Enterprise agentic AI infrastructure for automated R&amp;D and regulated workflows.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="portfolio-genomic-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4c4 0 8 4 8 8s-4 8-8 8"/><path d="M8 4c-4 0-8 4-8 8s4 8 8 8"/><path d="M6 8h12M6 16h12"/></svg></span><strong class="spotlight-card__title">Genomic AI ventures</strong><span class="spotlight-card__summary">Genomic-clinical AI, pharmacogenomics, biomarker discovery, and disease-area analytics.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="portfolio-firewall-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 7v5c0 5 2.7 7.4 6 8 3.3-.6 6-3 6-8V7z"/><path d="M9 12h6"/></svg></span><strong class="spotlight-card__title">Omics Firewall</strong><span class="spotlight-card__summary">Secure access, provenance, auditability, model governance, and controlled release.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="portfolio-workbench-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10"/><path d="M9 4v6l-3 5a3 3 0 0 0 2.6 5h6.8A3 3 0 0 0 18 15l-3-5V4"/></svg></span><strong class="spotlight-card__title">Pharma R&amp;D Workbenches</strong><span class="spotlight-card__summary">Dose optimisation, titration modelling, simulation, and structured evidence environments.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="portfolio-supply-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/><path d="M8 4v4M12 10v4M16 16v4"/></svg></span><strong class="spotlight-card__title">Secure data infrastructure</strong><span class="spotlight-card__summary">Controlled collaboration, provenance, and regulated operational infrastructure beyond omics.</span></button>
+          <button class="spotlight-card" type="button" data-dialog-open="portfolio-disease-dialog"><span class="spotlight-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h7v12H4z"/><path d="M13 6h7v5h-7z"/><path d="M13 13h7v5h-7z"/></svg></span><strong class="spotlight-card__title">Disease-area ventures</strong><span class="spotlight-card__summary">Focused platforms for oncology, cardiometabolic, rare, infectious, and other selected programmes.</span></button>
         </div>
+
+        <dialog class="spotlight-dialog" id="portfolio-ai-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/><path d="M4 12h3M17 12h3M12 4v3M12 17v3"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Platform</span><h3 class="spotlight-dialog__title">LydiaRX AI Studio</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>AI Studio is the portfolio's control substrate for agentic execution, validation, and governed workflow automation.</p><p>It matters because it can support multiple ventures rather than existing as an isolated software product.</p></div><div class="spotlight-dialog__actions"><a class="button secondary" href="lydiarx-ai-studio.html">Open AI Studio</a></div></article></dialog>
+        <dialog class="spotlight-dialog" id="portfolio-genomic-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4c4 0 8 4 8 8s-4 8-8 8"/><path d="M8 4c-4 0-8 4-8 8s4 8 8 8"/><path d="M6 8h12M6 16h12"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Genomics</span><h3 class="spotlight-dialog__title">Genomic AI ventures</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>This category covers genomic-clinical intelligence, pharmacogenomics, biomarker programmes, and disease-focused analytical modules.</p><p>It is where governed biomedical data and AI reasoning can compound into differentiated venture assets.</p></div><div class="spotlight-dialog__actions"><a class="button secondary" href="genomic-ai.html">Open Genomic AI</a></div></article></dialog>
+        <dialog class="spotlight-dialog" id="portfolio-firewall-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 6 7v5c0 5 2.7 7.4 6 8 3.3-.6 6-3 6-8V7z"/><path d="M9 12h6"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Custody</span><h3 class="spotlight-dialog__title">Omics Firewall</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Omics Firewall is the portfolio's governed infrastructure layer for compute-to-data, access policy, provenance, and controlled output release.</p><p>It is a reusable venture category because strong custody and control can support multiple future programmes.</p></div><div class="spotlight-dialog__actions"><a class="button secondary" href="omics-firewall.html">Open Omics Firewall</a></div></article></dialog>
+        <dialog class="spotlight-dialog" id="portfolio-workbench-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10"/><path d="M9 4v6l-3 5a3 3 0 0 0 2.6 5h6.8A3 3 0 0 0 18 15l-3-5V4"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Scientific workflow</span><h3 class="spotlight-dialog__title">Pharma R&amp;D Workbenches</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>These workbenches translate the common stack into dose, titration, stratification, and study-design problems where AI and simulation can add structured value.</p><p>They are good examples of how shared infrastructure becomes domain-specific operating capability.</p></div><div class="spotlight-dialog__actions"><a class="button secondary" href="pharma-rd-workbenches.html">Open workbenches</a></div></article></dialog>
+        <dialog class="spotlight-dialog" id="portfolio-supply-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/><path d="M8 4v4M12 10v4M16 16v4"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Infrastructure</span><h3 class="spotlight-dialog__title">Secure data infrastructure</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Beyond omics, LydiaRX sees venture potential in provenance-heavy, controlled collaboration infrastructure for regulated supply, manufacturing, and evidence workflows.</p><p>The underlying pattern is the same: sensitive operations become more usable when custody and governance are designed directly into the architecture.</p></div></article></dialog>
+        <dialog class="spotlight-dialog" id="portfolio-disease-dialog" data-spotlight-dialog><article class="spotlight-dialog__panel"><div class="spotlight-dialog__header"><span class="spotlight-dialog__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h7v12H4z"/><path d="M13 6h7v5h-7z"/><path d="M13 13h7v5h-7z"/></svg></span><div class="spotlight-dialog__heading"><span class="spotlight-dialog__eyebrow">Domain focus</span><h3 class="spotlight-dialog__title">Disease-area ventures</h3></div><button class="spotlight-dialog__close" type="button" data-dialog-close aria-label="Close panel">&times;</button></div><div class="spotlight-dialog__body"><p>Disease-area ventures are how broad infrastructure becomes sharp operating focus. Oncology, cardiometabolic disease, rare disease, infectious disease, and other selected programmes can each form their own route.</p><p>This is the portfolio's way of concentrating scientific relevance without abandoning the benefits of a shared stack.</p></div></article></dialog>
       </section>
 
       <section class="section">
